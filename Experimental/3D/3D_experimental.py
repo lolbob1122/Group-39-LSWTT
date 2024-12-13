@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-# import numpy as np
+import numpy as np
+import math 
 
 # Define the file path
 file_path = "Experimental/3D/raw_3D.txt"
@@ -40,16 +41,20 @@ plt.show()
 # Calculate the slope of the linear section
 # Define a range for the linear section (e.g., where Alpha is between 5 and 15)
 
-
 slope = (C_l[35] - C_l[0])/(Alpha[35] - Alpha[0])
 
 # Perform a linear fit (least squares method)
 
 print(f"Slope of the linear section: {slope}")
 
+# Now calculate the efficiency factor 
+a_0 = 0.0948333 
+a = slope 
+AR = 5.21125
 
+efficiency_factor = (a_0/a - 1)*(math.pi * AR / a_0) - 1
+
+print(efficiency_factor)
 # # Print each parameter list with its name (example)
 # for parameter, values in parameter_lists.items():
 #     print(f"{parameter}: {values[:5]} ...")  # Print the first 5 values as a preview
-
-
