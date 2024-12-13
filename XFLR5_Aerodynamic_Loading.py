@@ -5,13 +5,13 @@ import scipy as sp
 S = 0.16*0.4169
 
 CL_min = 0.00
-CL12 = 0.00
+CL_max = 0.00
 
 Cm_min = 0.00
-Cm12 = 0.00
+Cm_max = 0.00
 
-CD0_min = 0.000
-CD12 = 0.000
+CD_min = 0.000
+CD_max = 0.000
 CLd_test = 0.5  # Change val
 Cmd_test = 0.5  # Change val
 Cdd_test = 0.5  # Change val
@@ -84,12 +84,12 @@ for line in data_lines:
             print(f"Error converting data: {e} in line: {line}")
             continue
 
-ylst0 = y_span[18:]
-chordlst0 = chord[18:]
-Ailst0 = Ai[18:]
-Cllst0 = Cl[18:]
-Cdlst0 = ICd[18:]
-Cmlst0 = CmAirf[18:]
+ylst_min = y_span[18:]
+chordlst_min = chord[18:]
+Ailst_min = Ai[18:]
+Cllst_min = Cl[18:]
+Cdlst_min = ICd[18:]
+Cmlst_min = CmAirf[18:]
 
 # Read the text file and extract data from the "Main Wing" section
 with open("XFLR5textfiles/MainWing_a=12.00_v=21.00ms.txt.txt", "r") as file:
@@ -120,18 +120,18 @@ data_lines = lines[start_idx:]
 
 # Initialize lists to store the extracted columns
 (
-    y_span10,
-    chord10,
-    Ai10,
-    Cl10,
-    PCd10,
-    ICd10,
-    CmGeom10,
-    CmAirf10,
-    XTrtop10,
-    XTrBot10,
-    XCP10,
-    BM10,
+    y_span_max,
+    chord_max,
+    Ai_max,
+    Cl_max,
+    PCd_max,
+    ICd_max,
+    CmGeom_max,
+    CmAirf_max,
+    XTrtop_max,
+    XTrBot_max,
+    XCP_max,
+    BM_max,
 ) = ([], [], [], [], [], [], [], [], [], [], [], [])
 
 # Process each line to extract the values
@@ -143,28 +143,28 @@ for line in data_lines:
     if len(columns) == 12:
         try:
             # Append the values to the respective lists
-            y_span10.append(float(columns[0]))
-            chord10.append(float(columns[1]))
-            Ai10.append(float(columns[2]))
-            Cl10.append(float(columns[3]))
-            PCd10.append(float(columns[4]))
-            ICd10.append(float(columns[5]))
-            CmGeom10.append(float(columns[6]))
-            CmAirf10.append(float(columns[7]))
-            XTrtop10.append(float(columns[8]))
-            XTrBot10.append(float(columns[9]))
-            XCP10.append(float(columns[10]))
-            BM10.append(float(columns[11]))
+            y_span_max.append(float(columns[0]))
+            chord_max.append(float(columns[1]))
+            Ai_max.append(float(columns[2]))
+            Cl_max.append(float(columns[3]))
+            PCd_max.append(float(columns[4]))
+            ICd_max.append(float(columns[5]))
+            CmGeom_max.append(float(columns[6]))
+            CmAirf_max.append(float(columns[7]))
+            XTrtop_max.append(float(columns[8]))
+            XTrBot_max.append(float(columns[9]))
+            XCP_max.append(float(columns[10]))
+            BM_max.append(float(columns[11]))
         except ValueError as e:
             print(f"Error converting data: {e} in line: {line}")
             continue
 
-ylst10 = y_span10[18:]
-chordlst10 = chord10[18:]
-Ailst10 = Ai10[18:]
-Cllst10 = Cl10[18:]
-Cdlst10 = ICd10[18:]
-Cmlst10 = CmAirf10[18:]
+ylst_max = y_span_max[18:]
+chordlst_max = chord_max[18:]
+Ailst_max = Ai_max[18:]
+Cllst_max = Cl_max[18:]
+Cdlst_max = ICd_max[18:]
+Cmlst_max = CmAirf_max[18:]
 # print(ylst0)  # comment
 
 
@@ -173,32 +173,32 @@ def interpolate(x, y):
     return f
 
 
-CL0_inter = interpolate(ylst0, Cllst0)
-CD0_inter = interpolate(ylst0, Cdlst0)
-Cm0_inter = interpolate(ylst0, Cmlst0)
-Ai0_inter = interpolate(ylst0, Ailst0)
+CL0_inter = interpolate(ylst_min, Cllst_min)
+CD0_inter = interpolate(ylst_min, Cdlst_min)
+Cm0_inter = interpolate(ylst_min, Cmlst_min)
+Ai0_inter = interpolate(ylst_min, Ailst_min)
 
 
-CL10_inter = interpolate(ylst10, Cllst10)
-CD10_inter = interpolate(ylst10, Cdlst10)
-Cm10_inter = interpolate(ylst10, Cmlst10)
-Ai10_inter = interpolate(ylst10, Ailst10)
+CL10_inter = interpolate(ylst_max, Cllst_max)
+CD10_inter = interpolate(ylst_max, Cdlst_max)
+Cm10_inter = interpolate(ylst_max, Cmlst_max)
+Ai10_inter = interpolate(ylst_max, Ailst_max)
 
 chord_inter = interpolate(y_span, chord)
 
 
 def CLdistr(y, CLd):
-    m = (CLd - CL0) / (CL10 - CL0)
+    m = (CLd - CL_min) / (CL_max - CL_min)
     return CL0_inter(y) + m * (CL10_inter(y) - CL0_inter(y))
 
 
 def CDdistr(y, CDd):
-    m = (CDd - CD0) / (CD10 - CD0)
+    m = (CDd - CD_min) / (CD_max - CD_min)
     return CD0_inter(y) + m * (CD10_inter(y) - CD0_inter(y))
 
 
 def Cmdistr(y, Cmd):
-    m = (Cmd - Cm0) / (Cm10 - Cm0)
+    m = (Cmd - Cm_min) / (Cm_max - Cm_min)
     return Cm0_inter(y) + m * (Cm10_inter(y) - Cm0_inter(y))
 
 
@@ -208,15 +208,15 @@ def Aidistr(y, Ad):
 
 
 CLalpha = sp.interpolate.interp1d(
-    [CL0, CL10], [0, 10], kind="linear", fill_value="extrapolate"
+    [CL_min, CL_max], [0, 10], kind="linear", fill_value="extrapolate"
 )
 
 CLCD = sp.interpolate.interp1d(
-    [CL0, CL10], [CD0, CD10], kind="linear", fill_value="extrapolate"
+    [CL_min, CL_max], [CD_min, CD_max], kind="linear", fill_value="extrapolate"
 )
 
 CLCm = sp.interpolate.interp1d(
-    [CL0, CL10], [Cm0, Cm10], kind="linear", fill_value="extrapolate"
+    [CL_min, CL_max], [Cm_min, Cm_max], kind="linear", fill_value="extrapolate"
 )
 
 
