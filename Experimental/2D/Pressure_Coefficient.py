@@ -20,15 +20,18 @@ columns = {col: data[col].dropna().tolist() for col in data.columns}
 for column, values in columns.items():
     print(f"Column '{column}': {values[:5]}...")  # Printing first 5 values as a preview
 
+# Function to plot a specific run
+# Specify the run number to plot
+run_number = 3  # Change this number to the desired run
 
-# Plot column 3 vs column 9
-column_3 = data.iloc[:, 2]
-column_9 = data.iloc[:, 8]
+# Assume 'X/C' is column 1, and each run's data is spread across columns after
+xc_column = data.iloc[:, 0]  # First column is X/C
+y_column = data.iloc[:, run_number - 1]  # Adjust for 0-indexing
 
 plt.figure(figsize=(10, 6))
-plt.plot(column_3, column_9, marker='o', linestyle='-', color='b')
-plt.xlabel(data.columns[2])
-plt.ylabel(data.columns[8])
-plt.title(f"{data.columns[2]} vs {data.columns[8]}")
+plt.plot(xc_column, y_column, marker='o', linestyle='-', color='b')
+plt.xlabel('X/C (Percentage)')
+plt.ylabel(f'Run {run_number} Data')
+plt.title(f'Run {run_number}: X/C vs Pressure')
 plt.grid(True)
 plt.show()
