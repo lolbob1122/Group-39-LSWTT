@@ -48,8 +48,8 @@ slope = (C_l[35] - C_l[0])/(Alpha[35] - Alpha[0])
 print(f"Slope of the linear section: {slope}")
 
 # Now calculate the efficiency factor 
-a_0 = 0.0948333 
-a = slope 
+a_0 = 0.0948333 *180 / math.pi
+a = slope *180 / math.pi
 AR = 5.21125
 
 efficiency_factor = (a_0/a - 1)*(math.pi * AR / a_0) - 1
