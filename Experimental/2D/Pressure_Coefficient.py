@@ -3,9 +3,10 @@
 # Relate the Cp curves to separation (tufts) locations (2 marks)
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Load the data from the file
-file_path = '/mnt/data/raw_2D.txt'
+file_path = 'Experimental\\2D\\raw_2D.txt'
 
 data = pd.read_csv(file_path, sep='\t', skiprows=1)  # Skip first row if it's units
 
@@ -19,3 +20,15 @@ columns = {col: data[col].dropna().tolist() for col in data.columns}
 for column, values in columns.items():
     print(f"Column '{column}': {values[:5]}...")  # Printing first 5 values as a preview
 
+
+# Plot column 3 vs column 9
+column_3 = data.iloc[:, 2]
+column_9 = data.iloc[:, 8]
+
+plt.figure(figsize=(10, 6))
+plt.plot(column_3, column_9, marker='o', linestyle='-', color='b')
+plt.xlabel(data.columns[2])
+plt.ylabel(data.columns[8])
+plt.title(f"{data.columns[2]} vs {data.columns[8]}")
+plt.grid(True)
+plt.show()
