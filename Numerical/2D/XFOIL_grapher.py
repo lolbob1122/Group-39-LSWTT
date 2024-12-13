@@ -27,7 +27,7 @@ def parse_xfoil_polar(filepath):
     for i, line in enumerate(lines):
         if line.strip().startswith('alpha') and 'CL' in line and 'CD' in line:
             header_found = True
-            start_index = i + 1
+            start_index = i + 2
             break
 
     if not header_found:
@@ -76,7 +76,7 @@ def plot_cl_curve(alpha, cl):
     Plots C_L vs alpha from the parsed data.
     """
     plt.figure(figsize=(8, 6))
-    plt.plot(alpha, cl, marker='o', linestyle='-', color='blue', label='$C_L$')
+    plt.plot(alpha, cl, marker='none', linestyle='-', color='blue', label='$C_L$')
     plt.title("Airfoil Polar: $C_L$ vs. $\\alpha$")
     plt.xlabel("Angle of Attack (deg)")
     plt.ylabel("$C_L$")
@@ -88,11 +88,13 @@ def plot_cl_curve(alpha, cl):
 def main():
     # Path to your XFOIL polar output file.
     # Replace 'polar_output.txt' with the actual filename.
-    filepath = ''
+    filepath = 'C:\\Users\mikfe\OneDrive\Документы\GitHub\Group-39-LSWTT\\Numerical\\2D\XFLR5textfiles\Viscous21ms\XFOIL_RE_4x10^5_2.txt'
 
     alpha, cl, cd, cdp, cm, top_xtr, bot_xtr = parse_xfoil_polar(filepath)
     plot_cl_curve(alpha, cl)
+    print((cl[10]-cl[2])/(alpha[10]-alpha[2]))
 
 
 if __name__ == "__main__":
     main()
+
