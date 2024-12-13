@@ -1,12 +1,14 @@
 import numpy as np
 import scipy as sp
 import math
-from Experimental import ambient_results_q_inf
+# from Experimental import ambient_results_q_inf
+# from ambient_results_rho import q_inf
 import matplotlib.pyplot as plt
 
 S = 2*0.16*0.4169
 A = (2*0.4169)**2/S
-Qinfty = ambient_results_q_inf.q_inf
+print('A', A)
+Qinfty = 253.92576892582358
 # CL_min = 0.00
 # CL_max = 0.00
 
@@ -107,7 +109,7 @@ for i in range(len(CL_lst)):
 
 delta_lst = []
 for i in range(len(alpha_lst)):
-    delta = abs(CDi_lst[i]/CL_lst[i]**2*math.pi*A - 1)
+    delta = abs(CDi_lst[i]/(CL_lst[i]**2)*math.pi*A - 1)
     delta_lst.append(delta)
 
 #print(delta_lst)
@@ -121,15 +123,15 @@ def remove_outliers_z_score(data, threshold=3):
 delta_clean_data = remove_outliers_z_score(delta_lst)
 #print(delta_clean_data)
 Delta = sum(delta_clean_data)/(len(delta_clean_data))
-#print(Delta)
+#print('delta', Delta)
 
 def interpolate_CL(alpha, alpha_lst, CL_lst):
     return np.interp(alpha, alpha_lst, CL_lst)
 
 # Example usage:
-alpha = 3.75
-CL = interpolate_CL(alpha, alpha_lst, CL_lst)
-print(f"Interpolated CL value at alpha {alpha}: {CL}")
+# alpha = 3.75
+# CL = interpolate_CL(alpha, alpha_lst, CL_lst)
+# print(f"Interpolated CL value at alpha {alpha}: {CL}")
 
 # Read the text file and extract data from the "Main Wing" section
 with open("Numerical\\3D\\XFLR5textfiles\\Viscous21ms\\Test_T1-21_0m_s-Panel.txt", "r") as file:
@@ -232,7 +234,7 @@ for i, line in enumerate(lines):
 # Real results
 
 # Read the text file and extract data from the "Freestream speed" section
-with open("Experimental\\3D\\raw_3D.txt", "r") as file:
+with open("Numerical\\3D\\XFLR5textfiles\\Inviscid21ms\\raw_3DNew.txt", "r") as file:
     lines = file.readlines()
 
 # Find the start of the "Freestream speed" data
@@ -257,7 +259,6 @@ data_lines = lines[start_idx:]
 # Initialize lists to store the extracted columns
 (
     nr,
-    time,
     alpha_real,
     deltaPb,
     P_bar,
@@ -267,7 +268,7 @@ data_lines = lines[start_idx:]
     Fz,
     RPM,
     rho,
-) = ([], [], [], [], [], [], [], [], [], [], [])
+) = ([], [], [], [], [], [], [], [], [], [])
 
 # Process each line to extract the values
 for line in data_lines:
@@ -275,52 +276,56 @@ for line in data_lines:
     columns = line.strip().split()
 
     # Ensure there are enough columns in each line (12 columns)
-    if len(columns) == 11:
+    if len(columns) == 10:
         try:
             # Append the values to the respective lists
             nr.append(float(columns[0]))
-            time.append(float(columns[1]))
-            alpha_real.append(float(columns[2]))
-            deltaPb.append(float(columns[3]))
-            P_bar.append(float(columns[4]))
-            T.append(float(columns[5]))
-            D_real.append(float(columns[6]))
-            L_real.append(float(columns[7]))
-            Fz.append(float(columns[8]))
-            RPM.append(float(columns[9]))
-            rho.append(float(columns[10]))
+            alpha_real.append(float(columns[1]))
+            deltaPb.append(float(columns[2]))
+            P_bar.append(float(columns[3]))
+            T.append(float(columns[4]))
+            D_real.append(float(columns[5]))
+            L_real.append(float(columns[6]))
+            Fz.append(float(columns[7]))
+            RPM.append(float(columns[8]))
+            rho.append(float(columns[9]))
         except ValueError as e:
             print(f"Error converting data: {e} in line: {line}")
             continue
 
-alpha_real_lst = alpha[:54]
-L_real_lst = 2*L_real[:54]
+alpha_real_lst = alpha_real[:54]
+print('alpha real', alpha_real_lst)
+L_reallst = L_real[:54]
+L_real_lst = []
+for i in range(len(L_reallst)):
+    L = 2*L_reallst[i]
+    L_real_lst.append(L)
 CL_real_lst = []
-D_real_lst = 2*D_real[:54]
+D_real_lst = D_real[:54]
 CD_real_lst = []
 for i in range(len(L_real_lst)):
     CL = L_real_lst[i]/(0.5*S*Qinfty)
-    CD = D_real_lst[i]/(0.5*S*Qinfty)
+    CD = 2*D_real_lst[i]/(0.5*S*Qinfty)
     CL_real_lst.append(CL)
     CD_real_lst.append(CD)
 
-a = (CL_real_lst[30]-CL_real_lst[2])/(alpha_real_lst[30]-alpha_real_lst[2])*180/(math.pi)
-a0 = 0.09483333333  # change val to misha's val later
+a = 0.06714*180/math.pi
+a0 = 0.09483333333*180/math.pi  # change val to misha's val later
 print('a0', a0)
-tau = a0/(a*(1+a0/math.pi/A))-1
+tau = (a0/a-1)/(a0/(math.pi*A))-1
+print('tau', tau)
 CDi_real_lst = []
 CDi_percentOfCD = []
 D_ind_real_lst = []
 for i in range(len(CD_real_lst)):
-    CDi = CL_real_lst[i]**2*(tau+1)/(math.pi*A)
+    CDi = (CL_real_lst[i])**2*(tau+1)/(math.pi*A)
     Di = CDi*S*Qinfty
     Percent = CDi/CD_real_lst[i]*100
     CDi_real_lst.append(CDi)
     CDi_percentOfCD.append(Percent)
     D_ind_real_lst.append(Di)
 
-print(Percent)
-
+print('CDi percent', CDi_percentOfCD)
 # for i, j in enumerate(alpha_lst):
 
 #     for m, n in enumerate(alpha_real_lst):
@@ -332,17 +337,27 @@ print(Percent)
 #         CL = interpolate_CL(alpha, alpha_lst, CL_lst)
 #         print(f"Interpolated CL value at alpha {alpha}: {CL}")
 
+print(len(alpha_real_lst))
+print(len(CL_real_lst))
+print(len(CDi_real_lst))
+
+Fake_CDi_XFLR5 = []
+for i in range(len(alpha_lst)):
+    CDi = CL_lst[i]**2/(A*math.pi)*(1+tau)
+    Fake_CDi_XFLR5.append(CDi)
+
 plt.plot(alpha_lst, CL_lst, color='green', label='XFLR5 Results')
 plt.plot(alpha_real_lst, CL_real_lst, color='purple', label='Wind Tunnel Results')
-plt.xlabel("$\alpha$ [$\deg$]")
+plt.xlabel("$\\alpha$ [$\deg$]")
 plt.ylabel("$C_L$ [-]")
 plt.legend()
 plt.title("Comparison of lift curves of experimental data and XFLR5 data")
 plt.show()
 
 plt.plot(alpha_lst, CDi_lst, color='green', label='XFLR5 Results')
+plt.plot(alpha_lst, Fake_CDi_XFLR5, color='blue', label='XFLR5 Results with $\\tau$ from experimental data')
 plt.plot(alpha_real_lst, CDi_real_lst, color='purple', label='Wind Tunnel Results')
-plt.xlabel("$\alpha$ [$\deg$]")
+plt.xlabel("$\\alpha$ [$\deg$]")
 plt.ylabel("$C_{D_i}$ [-]")
 plt.legend()
 plt.title("Comparison of induced drag of experimental data and XFLR5 data")

@@ -53,3 +53,5 @@ def get_ambient_results(file_name): # makes a function so luca can call it
 
 get_ambient_results(file_name)
 
+q_inf = get_ambient_results(file_name)[1]
+print('q_inf', q_inf)
