@@ -207,6 +207,7 @@ for line in data_lines:
 alpha_lstV = alpha[:35]
 CL_lstV = CL[:35]
 CDi_lstV = CDi[:35]
+CDv_lstV = CDv[:35]
 CD_lstV = CD[:35]
 Qinf_lstV = Qinf[:35]
 print(alpha_lstV)
@@ -304,8 +305,8 @@ CL_real_lst = []
 D_real_lst = D_real[:54]
 CD_real_lst = []
 for i in range(len(L_real_lst)):
-    CL = L_real_lst[i]/(0.5*S*Qinfty)
-    CD = 2*D_real_lst[i]/(0.5*S*Qinfty)
+    CL = L_real_lst[i]/(S*Qinfty)
+    CD = 2*D_real_lst[i]/(S*Qinfty)
     CL_real_lst.append(CL)
     CD_real_lst.append(CD)
 
@@ -317,13 +318,16 @@ print('tau', tau)
 CDi_real_lst = []
 CDi_percentOfCD = []
 D_ind_real_lst = []
+CDv_real_lst = []
 for i in range(len(CD_real_lst)):
     CDi = (CL_real_lst[i])**2*(tau+1)/(math.pi*A)
+    CDv = CD_real_lst[i]-CDi
     Di = CDi*S*Qinfty
     Percent = CDi/CD_real_lst[i]*100
     CDi_real_lst.append(CDi)
     CDi_percentOfCD.append(Percent)
     D_ind_real_lst.append(Di)
+    CDv_real_lst.append(CDv)
 
 print('CDi percent', CDi_percentOfCD)
 # for i, j in enumerate(alpha_lst):
@@ -342,9 +346,12 @@ print(len(CL_real_lst))
 print(len(CDi_real_lst))
 
 Fake_CDi_XFLR5 = []
+Fake_CDv_XFLR5 = []
 for i in range(len(alpha_lst)):
     CDi = CL_lst[i]**2/(A*math.pi)*(1+tau)
     Fake_CDi_XFLR5.append(CDi)
+    CDv = CD_lst[i]-CDi
+    Fake_CDv_XFLR5.append(CDv)
 
 plt.plot(alpha_lst, CL_lst, color='green', label='XFLR5 Results')
 plt.plot(alpha_real_lst, CL_real_lst, color='purple', label='Wind Tunnel Results')
@@ -361,5 +368,32 @@ plt.xlabel("$\\alpha$ [$\deg$]")
 plt.ylabel("$C_{D_i}$ [-]")
 plt.legend()
 plt.title("Comparison of induced drag of experimental data and XFLR5 data")
+plt.show()
+
+plt.plot(alpha_real_lst, CDv_real_lst, color='green', label='$C_{D_0}$')
+plt.plot(alpha_real_lst, CD_real_lst, color='blue', label='$C_D$')
+plt.plot(alpha_real_lst, CDi_real_lst, color='purple', label='$C_{D_i}$')
+plt.xlabel("$\\alpha$ [$\deg$]")
+plt.ylabel("$C_{D}$ [-]")
+plt.legend()
+plt.title("Incuded drag buildup (Experimental data)")
+plt.show()
+
+plt.plot(alpha_lstV, CDv_lstV, color='green', label='$C_{D_0}$')
+plt.plot(alpha_lstV, CDi_lstV, color='blue', label='$C_D$')
+plt.plot(alpha_lstV, CD_lstV, color='purple', label='$C_{D_i}$')
+plt.xlabel("$\\alpha$ [$\deg$]")
+plt.ylabel("$C_{D}$ [-]")
+plt.legend()
+plt.title("Incuded drag buildup (Viscous XFLR5 data)")
+plt.show()
+
+plt.plot(alpha_lst, Fake_CDv_XFLR5, color='green', label='$C_{D_0}$')
+plt.plot(alpha_lst, Fake_CDi_XFLR5, color='blue', label='$C_{D_i}$')
+plt.plot(alpha_lst, CD_lst, color='purple', label='$C_{D}$')
+plt.xlabel("$\\alpha$ [$\deg$]")
+plt.ylabel("$C_{D}$ [-]")
+plt.legend()
+plt.title("Incuded drag buildup (Viscous XFLR5 data)")
 plt.show()
 #print(alpha_lst)
