@@ -12,6 +12,7 @@ def get_ambient_results(file_name): # makes a function so luca can call it
     T_zero = 273.15 # K
     S = 110.4 # K
     R = 287 # J/kg*K
+    c = 0.16 # m 
 
     # Reads csv file to find all values for p and T
     with open ( file_name , 'r') as raw_2D_data: 
@@ -37,12 +38,18 @@ def get_ambient_results(file_name): # makes a function so luca can call it
     mu = mu_zero * (( T_avg / T_zero ) ** ( 3 / 2 )) * (( T_zero + S )/( T_avg + S ))
     q_inf = 0.211804 + 1.928442 * Delta_P_avg + (1.879374 * 10 ** (-4)) * Delta_P_avg ** 2
     rho = P_avg / (R * T_avg)
+    P_s = P_avg - q_inf
+    U_inf = math.sqrt((2 * q_inf)/rho)
+    Re = (rho * U_inf * c) / mu
 
     print(rho)
     print(q_inf)
     print(mu)
+    print(P_s)
+    print(U_inf)
+    print(Re)
 
-    return (mu,q_inf,rho,P_avg,T_avg,Delta_P_avg)
+    return (mu,q_inf,rho,P_s,P_avg,T_avg,Delta_P_avg,U_inf,Re)
 
 get_ambient_results(file_name)
 
