@@ -4,7 +4,7 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from "Experimental\\Ambient_Results\\ambient_results.py" import P_Avg
 # Load the data from the file
 file_path = 'Experimental\\2D\\raw_2D.txt'
 
@@ -27,6 +27,7 @@ run_number = 3  # Change this number to the desired run
 # Assume 'X/C' is column 1, and each run's data is spread across columns after
 xc_column = data.iloc[:, 0]  # First column is X/C
 y_column = data.iloc[:, run_number - 1]  # Adjust for 0-indexing
+
 
 plt.figure(figsize=(10, 6))
 plt.plot(xc_column, y_column, marker='o', linestyle='-', color='b')
