@@ -1,11 +1,14 @@
 import numpy as np
 import scipy as sp
 import math
+# from Experimental import ambient_results_q_inf
+# from ambient_results_rho import q_inf
+import matplotlib.pyplot as plt
 
-
-S = 0.16*0.4169
-A = 0.4169**2/S
-
+S = 2*0.16*0.4169
+A = (2*0.4169)**2/S
+print('A', A)
+Qinfty = 253.92576892582358
 # CL_min = 0.00
 # CL_max = 0.00
 
@@ -89,16 +92,24 @@ for line in data_lines:
             print(f"Error converting data: {e} in line: {line}")
             continue
 
-alpha_lst = alpha[:35]
-CL_lst = CL[:35]
-CDi_lst = CDi[:35]
-CD_lst = CD[:35]
-Qinf_lst = Qinf[:35]
+alpha_lst = alpha[:43]
+CL_lst = CL[:43]
+Lift_lst = []
+CDi_lst = CDi[:43]
+InducedDrag = []
+CD_lst = CD[:43]
+Qinf_lst = Qinf[:43]
 #print(alpha_lst)
+
+for i in range(len(CL_lst)):
+    Lift = CL_lst[i]*Qinfty*S
+    Di = CDi_lst[i]*Qinfty*S
+    Lift_lst.append(Lift)
+    InducedDrag.append(Di)
 
 delta_lst = []
 for i in range(len(alpha_lst)):
-    delta = abs(CDi_lst[i]/CL_lst[i]**2*math.pi*A - 1)
+    delta = abs(CDi_lst[i]/(CL_lst[i]**2)*math.pi*A - 1)
     delta_lst.append(delta)
 
 #print(delta_lst)
@@ -112,15 +123,15 @@ def remove_outliers_z_score(data, threshold=3):
 delta_clean_data = remove_outliers_z_score(delta_lst)
 #print(delta_clean_data)
 Delta = sum(delta_clean_data)/(len(delta_clean_data))
-#print(Delta)
+#print('delta', Delta)
 
 def interpolate_CL(alpha, alpha_lst, CL_lst):
     return np.interp(alpha, alpha_lst, CL_lst)
 
 # Example usage:
-alpha = 3.75
-CL = interpolate_CL(alpha, alpha_lst, CL_lst)
-print(f"Interpolated CL value at alpha {alpha}: {CL}")
+# alpha = 3.75
+# CL = interpolate_CL(alpha, alpha_lst, CL_lst)
+# print(f"Interpolated CL value at alpha {alpha}: {CL}")
 
 # Read the text file and extract data from the "Main Wing" section
 with open("Numerical\\3D\\XFLR5textfiles\\Viscous21ms\\Test_T1-21_0m_s-Panel.txt", "r") as file:
@@ -196,108 +207,193 @@ for line in data_lines:
 alpha_lstV = alpha[:35]
 CL_lstV = CL[:35]
 CDi_lstV = CDi[:35]
+CDv_lstV = CDv[:35]
 CD_lstV = CD[:35]
 Qinf_lstV = Qinf[:35]
 print(alpha_lstV)
 
+# Read the text file and extract data from the "Freestream speed" section
+with open("Numerical\\3D\\XFLR5textfiles\\Inviscid21ms\\Test_T1-21_0m_s-Panel-Inviscid.txt", "r") as file:
+    lines = file.readlines()
 
-# def interpolate(x, y):
-#     f = sp.interpolate.interp1d(x, y, kind="linear", fill_value="extrapolate")
-#     return f
+# Print the first few lines to confirm file is being read correctly
+# print("First few lines of the file:")
+# print("".join(lines[:10]))  # Print the first 10 lines for verification
 
-
-# CL0_inter = interpolate(ylst_min, Cllst_min)
-# CD0_inter = interpolate(ylst_min, Cdlst_min)
-# Cm0_inter = interpolate(ylst_min, Cmlst_min)
-# Ai0_inter = interpolate(ylst_min, Ailst_min)
-
-
-# CL10_inter = interpolate(ylst_max, Cllst_max)
-# CD10_inter = interpolate(ylst_max, Cdlst_max)
-# Cm10_inter = interpolate(ylst_max, Cmlst_max)
-# Ai10_inter = interpolate(ylst_max, Ailst_max)
-
-# chord_inter = interpolate(y_span, chord)
+# Find the start of the "Freestream speed" data
+start_idx = None
+for i, line in enumerate(lines):
+    if "Freestream speed" in line.strip():  # Search for the "Freestream speed" line
+        start_idx = (
+            i + 3
+        )  # Skip the header and start with the data (2 lines after "Freestream speed")
+        break
 
 
-# def CLdistr(y, CLd):
-#     m = (CLd - CL_min) / (CL_max - CL_min)
-#     return CL0_inter(y) + m * (CL10_inter(y) - CL0_inter(y))
 
 
-# def CDdistr(y, CDd):
-#     m = (CDd - CD_min) / (CD_max - CD_min)
-#     return CD0_inter(y) + m * (CD10_inter(y) - CD0_inter(y))
+# Real results
 
+# Read the text file and extract data from the "Freestream speed" section
+with open("Numerical\\3D\\XFLR5textfiles\\Inviscid21ms\\raw_3DNew.txt", "r") as file:
+    lines = file.readlines()
 
-# def Cmdistr(y, Cmd):
-#     m = (Cmd - Cm_min) / (Cm_max - Cm_min)
-#     return Cm0_inter(y) + m * (Cm10_inter(y) - Cm0_inter(y))
+# Find the start of the "Freestream speed" data
+start_idx = None
+for i, line in enumerate(lines):
+    if "Run_nr" in line.strip():  # Search for the "Freestream speed" line
+        start_idx = (
+            i + 2
+        )  # Skip the header and start with the data (2 lines after "Freestream speed")
+        break
 
+# Check if we found the "Freestream speed" section
+if start_idx is None:
+    print("Error: 'Run_nr' section not found!")
+else:
+    # print(f"Data starts from line {start_idx}")
+    pass
 
-# def Aidistr(y, Ad):
-#     m = Ad / 10
-#     return Ai0_inter(y) + m * (Ai10_inter(y) - Ai0_inter(y))
+# Extract the rows under the "Freestream speed" section
+data_lines = lines[start_idx:]
 
+# Initialize lists to store the extracted columns
+(
+    nr,
+    alpha_real,
+    deltaPb,
+    P_bar,
+    T,
+    D_real,
+    L_real,
+    Fz,
+    RPM,
+    rho,
+) = ([], [], [], [], [], [], [], [], [], [])
 
-# CLalpha = sp.interpolate.interp1d(
-#     [CL_min, CL_max], [0, 10], kind="linear", fill_value="extrapolate"
-# )
+# Process each line to extract the values
+for line in data_lines:
+    # Strip leading/trailing spaces and split by any whitespace (tabs, spaces, etc.)
+    columns = line.strip().split()
 
-# CLCD = sp.interpolate.interp1d(
-#     [CL_min, CL_max], [CD_min, CD_max], kind="linear", fill_value="extrapolate"
-# )
+    # Ensure there are enough columns in each line (12 columns)
+    if len(columns) == 10:
+        try:
+            # Append the values to the respective lists
+            nr.append(float(columns[0]))
+            alpha_real.append(float(columns[1]))
+            deltaPb.append(float(columns[2]))
+            P_bar.append(float(columns[3]))
+            T.append(float(columns[4]))
+            D_real.append(float(columns[5]))
+            L_real.append(float(columns[6]))
+            Fz.append(float(columns[7]))
+            RPM.append(float(columns[8]))
+            rho.append(float(columns[9]))
+        except ValueError as e:
+            print(f"Error converting data: {e} in line: {line}")
+            continue
 
-# CLCm = sp.interpolate.interp1d(
-#     [CL_min, CL_max], [Cm_min, Cm_max], kind="linear", fill_value="extrapolate"
-# )
+alpha_real_lst = alpha_real[:54]
+print('alpha real', alpha_real_lst)
+L_reallst = L_real[:54]
+L_real_lst = []
+for i in range(len(L_reallst)):
+    L = 2*L_reallst[i]
+    L_real_lst.append(L)
+CL_real_lst = []
+D_real_lst = D_real[:54]
+CD_real_lst = []
+for i in range(len(L_real_lst)):
+    CL = L_real_lst[i]/(S*Qinfty)
+    CD = 2*D_real_lst[i]/(S*Qinfty)
+    CL_real_lst.append(CL)
+    CD_real_lst.append(CD)
 
+a = 0.06714*180/math.pi
+a0 = 0.09483333333*180/math.pi  # change val to misha's val later
+print('a0', a0)
+tau = (a0/a-1)/(a0/(math.pi*A))-1
+print('tau', tau)
+CDi_real_lst = []
+CDi_percentOfCD = []
+D_ind_real_lst = []
+CDv_real_lst = []
+for i in range(len(CD_real_lst)):
+    CDi = (CL_real_lst[i])**2*(tau+1)/(math.pi*A)
+    CDv = CD_real_lst[i]-CDi
+    Di = CDi*S*Qinfty
+    Percent = CDi/CD_real_lst[i]*100
+    CDi_real_lst.append(CDi)
+    CDi_percentOfCD.append(Percent)
+    D_ind_real_lst.append(Di)
+    CDv_real_lst.append(CDv)
 
-# # angle of attack used to transform L and D to Norm and Tang
-# def alpha(mass, n, rho, V):  # in degrees
-#     case_CL = (mass * 9.81 * n) / (0.5 * rho * (V**2) * S)
-#     return CLalpha(case_CL) * np.pi / 180  # radians
+print('CDi percent', CDi_percentOfCD)
+# for i, j in enumerate(alpha_lst):
 
+#     for m, n in enumerate(alpha_real_lst):
+#         def interpolate_CL(alpha, alpha_lst, CL_lst):
+#             return np.interp(alpha, alpha_lst, CL_lst)
 
-# def Lift(y, rho, V, mass, n):
-#     case_CL = (mass * 9.81 * n) / (0.5 * rho * (V**2) * S)
-#     return 0.5 * rho * (V**2) * CLdistr(y, case_CL) * chord_inter(y)
+#         # Example usage:
+#         alpha = 3.75
+#         CL = interpolate_CL(alpha, alpha_lst, CL_lst)
+#         print(f"Interpolated CL value at alpha {alpha}: {CL}")
 
+print(len(alpha_real_lst))
+print(len(CL_real_lst))
+print(len(CDi_real_lst))
 
-# def Drag(y, rho, V, mass, n):
-#     case_CL = (mass * 9.81 * n) / (0.5 * rho * (V**2) * S)
-#     CD = CLCD(case_CL)
-#     return 0.5 * rho * (V**2) * CDdistr(y, CD) * chord_inter(y)
+Fake_CDi_XFLR5 = []
+Fake_CDv_XFLR5 = []
+for i in range(len(alpha_lst)):
+    CDi = CL_lst[i]**2/(A*math.pi)*(1+tau)
+    Fake_CDi_XFLR5.append(CDi)
+    CDv = CD_lst[i]-CDi
+    Fake_CDv_XFLR5.append(CDv)
 
+plt.plot(alpha_lst, CL_lst, color='green', label='XFLR5 Results')
+plt.plot(alpha_real_lst, CL_real_lst, color='purple', label='Wind Tunnel Results')
+plt.xlabel("$\\alpha$ [$\deg$]")
+plt.ylabel("$C_L$ [-]")
+plt.legend()
+plt.title("Comparison of lift curves of experimental data and XFLR5 data")
+plt.show()
 
-# def Moment(y, rho, V, mass, n):
-#     case_CL = (mass * 9.81 * n) / (0.5 * rho * (V**2) * S)
-#     Cm = CLCm(case_CL)
+plt.plot(alpha_lst, CDi_lst, color='green', label='XFLR5 Results')
+plt.plot(alpha_lst, Fake_CDi_XFLR5, color='blue', label='XFLR5 Results with $\\tau$ from experimental data')
+plt.plot(alpha_real_lst, CDi_real_lst, color='purple', label='Wind Tunnel Results')
+plt.xlabel("$\\alpha$ [$\deg$]")
+plt.ylabel("$C_{D_i}$ [-]")
+plt.legend()
+plt.title("Comparison of induced drag of experimental data and XFLR5 data")
+plt.show()
 
-#     return 0.5 * rho * (V**2) * Cmdistr(y, Cm) * chord_inter(y) ** 2
+plt.plot(alpha_real_lst, CDv_real_lst, color='green', label='$C_{D_0}$')
+plt.plot(alpha_real_lst, CD_real_lst, color='blue', label='$C_D$')
+plt.plot(alpha_real_lst, CDi_real_lst, color='purple', label='$C_{D_i}$')
+plt.xlabel("$\\alpha$ [$\deg$]")
+plt.ylabel("$C_{D}$ [-]")
+plt.legend()
+plt.title("Incuded drag buildup (Experimental data)")
+plt.show()
 
+plt.plot(alpha_lstV, CDv_lstV, color='green', label='$C_{D_0}$')
+plt.plot(alpha_lstV, CDi_lstV, color='blue', label='$C_D$')
+plt.plot(alpha_lstV, CD_lstV, color='purple', label='$C_{D_i}$')
+plt.xlabel("$\\alpha$ [$\deg$]")
+plt.ylabel("$C_{D}$ [-]")
+plt.legend()
+plt.title("Incuded drag buildup (Viscous XFLR5 data)")
+plt.show()
 
-# def Alphaind(y, rho, V, mass, n):
-#     case_CL = (mass * 9.81 * n) / (0.5 * rho * (V**2) * S)
-#     alpha = CLalpha(case_CL)
-#     return Aidistr(y, alpha) * np.pi / 180
-
-
-# # fig, axs = plt.subplots(3, 2)
-# # axs[0][0].plot(ylst0, Lift(ylst0, 1.225, 10, 1000, 4))
-# # axs[0][0].set_title("Spanwise Lift Distr")
-
-# # axs[1][0].plot(ylst0, Drag(ylst0, 1.225, 10, 1000, 4))
-# # axs[1][0].set_title("Spanwise Drag Distr")
-
-# # axs[2][0].plot(ylst0, Moment(ylst0, 1.225, 10, 1000, 4))
-# # axs[2][0].set_title("Spanwise Moment Distr")
-
-# # axs[0][1].plot(ylst0, Alphaind(ylst0, 1.225, 10, 1000, 4))
-# # axs[0][1].set_title("Spanwise Alpha induced Distr")
-
-
-# # axs[1][1].plot(ylst0, CLdistr(ylst0,0.928089))
-# # axs[1][1].set_title("Spanwise CL Distr")
-
-# # plt.show()
+plt.plot(alpha_lst, Fake_CDv_XFLR5, color='green', label='$C_{D_0}$')
+plt.plot(alpha_lst, Fake_CDi_XFLR5, color='blue', label='$C_{D_i}$')
+plt.plot(alpha_lst, CD_lst, color='purple', label='$C_{D}$')
+plt.xlabel("$\\alpha$ [$\deg$]")
+plt.ylabel("$C_{D}$ [-]")
+plt.legend()
+plt.title("Incuded drag buildup (Viscous XFLR5 data)")
+plt.show()
+#print(alpha_lst)
