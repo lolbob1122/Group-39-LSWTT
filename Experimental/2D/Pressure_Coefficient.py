@@ -4,29 +4,28 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
-from "Experimental\\Ambient_Results\\ambient_results.py" import P_Avg
-# Load the data from the file
-file_path = 'Experimental\\2D\\raw_2D.txt'
 
-data = pd.read_csv(file_path, sep='\t', skiprows=1)  # Skip first row if it's units
+# Load the data from the file
+raw_data = 'Experimental\\2D\\raw_2D.txt'
+
+_2Ddata = pd.read_csv(raw_data, sep='\t', skiprows=1)  # Skip first row if it's units
 
 # Extract column headers
-data.columns = data.columns.str.strip()
+_2Ddata.columns = _2Ddata.columns.str.strip()
 
 # Create a dictionary of lists for each column
-columns = {col: data[col].dropna().tolist() for col in data.columns}
+columns = {col: _2Ddata[col].dropna().tolist() for col in _2Ddata.columns}
 
 # Print out the dictionary of columns
 for column, values in columns.items():
     print(f"Column '{column}': {values[:5]}...")  # Printing first 5 values as a preview
-
 # Function to plot a specific run
 # Specify the run number to plot
 run_number = 3  # Change this number to the desired run
 
 # Assume 'X/C' is column 1, and each run's data is spread across columns after
-xc_column = data.iloc[:, 0]  # First column is X/C
-y_column = data.iloc[:, run_number - 1]  # Adjust for 0-indexing
+xc_column = _2Ddata.iloc[:, 0]  # First column is X/C
+y_column = _2Ddata.iloc[:, run_number - 1]  # Adjust for 0-indexing
 
 
 plt.figure(figsize=(10, 6))
