@@ -94,18 +94,21 @@ for line in data_lines:
 
 alpha_lst = alpha[:43]
 CL_lst = CL[:43]
-Lift_lst = []
 CDi_lst = CDi[:43]
-InducedDrag = []
 CD_lst = CD[:43]
 Qinf_lst = Qinf[:43]
 #print(alpha_lst)
+
+Lift_lst = []
+InducedDrag = []
+Drag_lst = []
 
 for i in range(len(CL_lst)):
     Lift = CL_lst[i]*Qinfty*S
     Di = CDi_lst[i]*Qinfty*S
     Lift_lst.append(Lift)
     InducedDrag.append(Di)
+    Drag_lst.append(Di)
 
 delta_lst = []
 for i in range(len(alpha_lst)):
@@ -123,7 +126,7 @@ def remove_outliers_z_score(data, threshold=3):
 delta_clean_data = remove_outliers_z_score(delta_lst)
 #print(delta_clean_data)
 Delta = sum(delta_clean_data)/(len(delta_clean_data))
-#print('delta', Delta)
+print('delta', Delta)
 
 def interpolate_CL(alpha, alpha_lst, CL_lst):
     return np.interp(alpha, alpha_lst, CL_lst)
@@ -211,6 +214,38 @@ CDv_lstV = CDv[:35]
 CD_lstV = CD[:35]
 Qinf_lstV = Qinf[:35]
 print(alpha_lstV)
+
+Lift_lstV = []
+InducedDrag_V = []
+ZeroLiftDrag_V = []
+Drag_lstV = []
+for i in range(len(CL_lstV)):
+    Lift = CL_lstV[i]*Qinfty*S
+    Di = CDi_lstV[i]*Qinfty*S
+    Dv = CDv_lstV[i]*Qinfty*S
+    D = Di+Dv
+    Lift_lst.append(Lift)
+    InducedDrag.append(Di)
+    ZeroLiftDrag_V.append(Dv)
+    Drag_lstV.append(D)
+
+delta_lstV = []
+for i in range(len(alpha_lstV)):
+    delta = abs(CDi_lstV[i]/(CL_lstV[i]**2)*math.pi*A - 1)
+    delta_lstV.append(delta)
+
+#print(delta_lst)
+
+def remove_outliers_z_score(data, threshold=3):
+    mean = np.mean(data)
+    std = np.std(data)
+    return [x for x in data if (abs(x - mean) / std) < threshold]
+
+# clean delta data
+delta_clean_dataV = remove_outliers_z_score(delta_lstV)
+#print(delta_clean_data)
+DeltaV = sum(delta_clean_dataV)/(len(delta_clean_dataV))
+print('deltaV', DeltaV)
 
 # Read the text file and extract data from the "Freestream speed" section
 with open("Numerical\\3D\\XFLR5textfiles\\Inviscid21ms\\Test_T1-21_0m_s-Panel-Inviscid.txt", "r") as file:
@@ -315,6 +350,7 @@ a0 = 0.09483333333*180/math.pi  # change val to misha's val later
 print('a0', a0)
 tau = (a0/a-1)/(a0/(math.pi*A))-1
 print('tau', tau)
+print('A', A)
 CDi_real_lst = []
 CDi_percentOfCD = []
 D_ind_real_lst = []
@@ -324,22 +360,14 @@ for i in range(len(CD_real_lst)):
     CDv = CD_real_lst[i]-CDi
     Di = CDi*S*Qinfty
     Percent = CDi/CD_real_lst[i]*100
+    if Percent>89.00:
+        print(i)
     CDi_real_lst.append(CDi)
     CDi_percentOfCD.append(Percent)
     D_ind_real_lst.append(Di)
     CDv_real_lst.append(CDv)
 
-print('CDi percent', CDi_percentOfCD)
-# for i, j in enumerate(alpha_lst):
-
-#     for m, n in enumerate(alpha_real_lst):
-#         def interpolate_CL(alpha, alpha_lst, CL_lst):
-#             return np.interp(alpha, alpha_lst, CL_lst)
-
-#         # Example usage:
-#         alpha = 3.75
-#         CL = interpolate_CL(alpha, alpha_lst, CL_lst)
-#         print(f"Interpolated CL value at alpha {alpha}: {CL}")
+#print('CDi percent', CDi_percentOfCD)
 
 print(len(alpha_real_lst))
 print(len(CL_real_lst))
@@ -375,6 +403,7 @@ plt.plot(alpha_real_lst, CD_real_lst, color='blue', label='$C_D$')
 plt.plot(alpha_real_lst, CDi_real_lst, color='purple', label='$C_{D_i}$')
 plt.xlabel("$\\alpha$ [$\deg$]")
 plt.ylabel("$C_{D}$ [-]")
+plt.grid(True)
 plt.legend()
 plt.title("Incuded drag buildup (Experimental data)")
 plt.show()
@@ -397,3 +426,4 @@ plt.legend()
 plt.title("Incuded drag buildup (Viscous XFLR5 data)")
 plt.show()
 #print(alpha_lst)
+
