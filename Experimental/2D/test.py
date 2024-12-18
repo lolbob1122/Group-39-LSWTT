@@ -1,6 +1,16 @@
 import matplotlib as mp
 import numpy as np
-# import Experimental.Ambient_Results.ambient_results_rho as ar
+import Experimental.Ambient_Results.ambient_results_rho as ar
+
+####################################################################
+############## ONLY CHANGE VARIABLES IN THIS BOX ###################
+runNumber = 6                                                   ####
+#                                                               ####
+#                                                               ####
+####################################################################
+######### DO NOT CHANGE ANYTHING AFTER THIS POINT ##################
+
+
 Data2D = []
 
 # Read the text file and extract data from the "Freestream speed" section
@@ -33,4 +43,9 @@ for line in data_lines:
     columns = line.strip().split() #columns = one row of data starting from row 3
     Data2D.append(columns)
     
-print(Data2D)
+runXdata = Data2D[runNumber-6] #select only one run
+# print(runXdata)
+print(runXdata[8:57])
+
+q_inf = ar.get_ambient_results_new(runNumber)[1]
+print(q_inf)
