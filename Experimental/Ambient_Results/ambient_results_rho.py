@@ -5,7 +5,7 @@ import csv
 
 def get_ambient_results_new(run_number): # makes a function so luca can call it
 
-    file_name = 'Experimental\Ambient Results\converted_2D.csv'
+    file_name = 'Ambient Results\\converted_2D.csv'
 #### Variable Definitions ####
 
     ''' Constants needed for the calculations '''
@@ -41,7 +41,7 @@ def get_ambient_results_new(run_number): # makes a function so luca can call it
 
     return (mu,q_inf,rho,P_s,U_inf,Re)
 
-file_name = 'Experimental\Ambient Results\converted_2D.csv'
+file_name = 'Experimental\\Ambient Results\\converted_2D.csv'
 
 def get_ambient_results(file_name): #original polo function
     
@@ -97,19 +97,19 @@ def get_ambient_results(file_name): #original polo function
 
 ###########################################################
 
-    print(rho)
-    print(q_inf)
-    print(mu)
-    print(P_s)
-    print(U_inf)
-    print(Re)
+    # print(rho)
+    # print(q_inf)
+    # print(mu)
+    # print(P_s)
+    # print(U_inf)
+    # print(Re)
 
     return (mu,q_inf,rho,P_s,P_avg,T_avg,Delta_P_avg,U_inf,Re)
 
-get_ambient_results()
+# get_ambient_results(file_name)
 
-q_inf = get_ambient_results()[1]
-print('q_inf', q_inf)
+# q_inf = get_ambient_results(file_name)[1]
+# print('q_inf', q_inf)
 
 import math
 import csv
