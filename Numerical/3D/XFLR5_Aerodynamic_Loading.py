@@ -1,14 +1,14 @@
 import numpy as np
 import scipy as sp
 import math
-# from Experimental import ambient_results_q_inf
+from Experimental.Ambient_Results.ambient_results_rho import q_inf
 # from ambient_results_rho import q_inf
 import matplotlib.pyplot as plt
 
 S = 2*0.16*0.4169
 A = (2*0.4169)**2/S
 print('A', A)
-Qinfty = 253.92576892582358
+Qinfty = q_inf #  253.92576892582358
 # CL_min = 0.00
 # CL_max = 0.00
 
