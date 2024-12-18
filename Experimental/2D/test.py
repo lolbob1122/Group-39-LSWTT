@@ -1,6 +1,11 @@
 import matplotlib as mp
 import numpy as np
-import Experimental.Ambient_Results.ambient_results_rho as ar
+
+import sys
+# caution: path[0] is reserved for script path (or '' in REPL)
+sys.path.insert(1, 'Experimental')
+
+import Ambient_Results.ambient_results_rho as ar
 
 ####################################################################
 ############## ONLY CHANGE VARIABLES IN THIS BOX ###################
