@@ -76,14 +76,26 @@ def plot_cl_curve(alpha, cl):
     Plots C_L vs alpha from the parsed data.
     """
     plt.figure(figsize=(8, 6))
-    plt.plot(alpha, cl, marker='none', linestyle='-', color='blue', label='$C_L$')
-    plt.title("Airfoil Polar: $C_L$ vs. $\\alpha$")
+    plt.plot(alpha, cl, marker='none', linestyle='-', color='blue', label='C_l')
+    plt.title("Airfoil Polar: C_l vs. alpha")
     plt.xlabel("Angle of Attack (deg)")
-    plt.ylabel("$C_L$")
+    plt.ylabel("C_l")
     plt.grid(True)
     plt.legend()
     plt.show()
 
+def plot_cd_curve(alpha, cd):
+    """
+    Plots C_L vs alpha from the parsed data.
+    """
+    plt.figure(figsize=(8, 6))
+    plt.plot(alpha, cd, marker='none', linestyle='-', color='blue', label='C_d')
+    plt.title("Airfoil Polar: C_d vs. alpha")
+    plt.xlabel("Angle of Attack (deg)")
+    plt.ylabel("C_d")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
 
 def main():
     # Path to your XFOIL polar output file.
@@ -92,7 +104,7 @@ def main():
 
     alpha, cl, cd, cdp, cm, top_xtr, bot_xtr = parse_xfoil_polar(filepath)
     plot_cl_curve(alpha, cl)
-    print((cl[10]-cl[2])/(alpha[10]-alpha[2]))
+    plot_cd_curve(alpha, cd)
 
 
 if __name__ == "__main__":
