@@ -1,14 +1,14 @@
 import numpy as np
 import scipy as sp
 import math
-from Experimental.Ambient_Results.ambient_results_rho import q_inf
+# from Experimental.Ambient_Results.ambient_results_rho import q_inf
 # from ambient_results_rho import q_inf
 import matplotlib.pyplot as plt
 
 S = 2*0.16*0.4169
 A = (2*0.4169)**2/S
 print('A', A)
-Qinfty = q_inf #  253.92576892582358
+Qinfty = 253.92576892582358
 # CL_min = 0.00
 # CL_max = 0.00
 
@@ -115,7 +115,7 @@ for i in range(len(alpha_lst)):
     delta = abs(CDi_lst[i]/(CL_lst[i]**2)*math.pi*A - 1)
     delta_lst.append(delta)
 
-#print(delta_lst)
+print(delta_lst)
 
 def remove_outliers_z_score(data, threshold=3):
     mean = np.mean(data)
@@ -123,8 +123,10 @@ def remove_outliers_z_score(data, threshold=3):
     return [x for x in data if (abs(x - mean) / std) < threshold]
 
 # clean delta data
+
 delta_clean_data = remove_outliers_z_score(delta_lst)
-#print(delta_clean_data)
+print(delta_clean_data)
+print('SSD delta', np.std(delta_clean_data))
 Delta = sum(delta_clean_data)/(len(delta_clean_data))
 print('delta', Delta)
 
@@ -234,7 +236,7 @@ for i in range(len(alpha_lstV)):
     delta = abs(CDi_lstV[i]/(CL_lstV[i]**2)*math.pi*A - 1)
     delta_lstV.append(delta)
 
-#print(delta_lst)
+print(delta_lstV)
 
 def remove_outliers_z_score(data, threshold=3):
     mean = np.mean(data)
@@ -243,7 +245,8 @@ def remove_outliers_z_score(data, threshold=3):
 
 # clean delta data
 delta_clean_dataV = remove_outliers_z_score(delta_lstV)
-#print(delta_clean_data)
+print(delta_clean_data)
+print("SSD for delta", np.std(delta_clean_dataV))
 DeltaV = sum(delta_clean_dataV)/(len(delta_clean_dataV))
 print('deltaV', DeltaV)
 
@@ -464,8 +467,8 @@ plt.title("$C_{D_i}$ of experimental data and XFLR5 data")
 
 plt.subplot(2, 2, 2)
 plt.plot(alpha_real_lst, CDv_real_lst, color='green', label='$C_{D_0}$')
-plt.plot(alpha_real_lst, CD_real_lst, color='blue', label='$C_D$')
-plt.plot(alpha_real_lst, CDi_real_lst, color='purple', label='$C_{D_i}$')
+plt.plot(alpha_real_lst, CD_real_lst, color='purple', label='$C_D$')
+plt.plot(alpha_real_lst, CDi_real_lst, color='blue', label='$C_{D_i}$')
 plt.xlabel("$\\alpha$ [$\\deg$]")
 plt.ylabel("$C_{D}$ [-]")
 plt.grid(True)
@@ -474,8 +477,8 @@ plt.title("Drag buildup - Experimental data")
 
 plt.subplot(2, 2, 3)
 plt.plot(alpha_lstV, CDv_lstV, color='green', label='$C_{D_0}$')
-plt.plot(alpha_lstV, CDi_lstV, color='blue', label='$C_D$')
-plt.plot(alpha_lstV, CD_lstV, color='purple', label='$C_{D_i}$')
+plt.plot(alpha_lstV, CDi_lstV, color='blue', label='$C_{D_i}$')
+plt.plot(alpha_lstV, CD_lstV, color='purple', label='$C_{D}$')
 plt.xlabel("$\\alpha$ [$\\deg$]")
 plt.ylabel("$C_{D}$ [-]")
 plt.grid(True)
