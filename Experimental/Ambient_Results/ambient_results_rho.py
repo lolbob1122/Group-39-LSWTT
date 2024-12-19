@@ -1,11 +1,11 @@
 import math
 import csv
 
+file_name = 'Experimental\\Ambient Results\\converted_2D.csv'
 
 
-def get_ambient_results_new(run_number): # makes a function so luca can call it
+def get_ambient_results_new(file_name, run_number): # makes a function so luca can call it
 
-    file_name = 'Ambient Results\\converted_2D.csv'
 #### Variable Definitions ####
 
     ''' Constants needed for the calculations '''
