@@ -9,7 +9,7 @@ import Ambient_Results.ambient_results_rho as ar
 
 ####################################################################
 ############## ONLY CHANGE VARIABLES IN THIS BOX ###################
-runNumber = 15                                                   ####
+runNumber = 32                                                  ####
 #                                                               ####
 #                                                               ####
 ####################################################################
@@ -56,7 +56,7 @@ q_inf = ar.get_ambient_results_new(name, runNumber)[1]
 # print(q_inf)
 Cp = []
 for i in range(len(pValues)):
-    Cp.append((float(pValues[i]) - float(runXdata[4]))/ q_inf )
+    Cp.append((float(pValues[i]) - (float(runXdata[104])-q_inf))/ q_inf )
 
 # print(Cp)
 PosList = []
@@ -90,13 +90,25 @@ Cp_first = Cp[:25]
 x_values_second = x_values[25:]
 Cp_second = Cp[25:]
 
+x_values_first_percent = [x / 100 for x in x_values_first]  # Normalize to 0-1
+x_values_second_percent = [x / 100 for x in x_values_second]  # Normalize to 0-1
+
 # Plot the two segments separately
 plt.figure(figsize=(10, 6))
-plt.plot(x_values_first, Cp_first, marker='o', linestyle='-', color='b', label='Cp (Segment 1)')
-plt.plot(x_values_second, Cp_second, marker='o', linestyle='-', color='r', label='Cp (Segment 2)')
-plt.title(f'Pressure Coefficient (Cp) vs Airfoil Tap Positions (Run {runNumber})')
-plt.xlabel('Tap Position (x-axis)')
-plt.ylabel('Pressure Coefficient (Cp)')
+# plt.plot(x_values_first, Cp_first, marker='o', linestyle='-', color='b', label='Cp (Upper Surface)')
+# plt.plot(x_values_second, Cp_second, marker='x', linestyle='-', color='r', label='Cp (Lower Surface)')
+plt.plot(
+    x_values_first_percent, Cp_first, marker="o", linestyle="-", color="b", label="$C_p$ (Upper Surface)"
+)
+plt.plot(
+    x_values_second_percent, Cp_second, marker="x", linestyle="-", color="r", label="$C_p$ (Lower Surface)"
+)
+
+
+# plt.title(f'Pressure Coefficient ($C_p$) vs Airfoil Tap Positions (Angle of Attack (α) = {runXdata[2]}°)')
+plt.xlabel('Tap Position (x/c)')
+plt.ylabel('Pressure Coefficient ($C_p$)')
+plt.gca().invert_yaxis()
 plt.grid(True)
 plt.legend()
 plt.show()
