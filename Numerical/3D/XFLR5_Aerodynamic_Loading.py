@@ -5,6 +5,8 @@ import math
 # from ambient_results_rho import q_inf
 import matplotlib.pyplot as plt
 
+
+print("C$_{\text{p}}$")
 S = 2*0.16*0.4169
 A = (2*0.4169)**2/S
 print('A', A)
