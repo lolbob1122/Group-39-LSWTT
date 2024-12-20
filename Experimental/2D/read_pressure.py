@@ -3,23 +3,62 @@ import numpy as np
 import pandas as pd
 import itertools as it
 import matplotlib.pyplot as plt
+import csv
 import math
 import sys
 sys.path.insert(1, 'Experimental')
 #new line for change
 
 
+def get_ambient_results_new(run_number): # makes a function so luca can call it
+
+    
+#### Variable Definitions ####
+
+    ''' Constants needed for the calculations '''
+    mu_zero = 1.716 * 10**(-5) # kg/m*s
+    T_zero = 273.15 # K
+    S = 110.4 # K
+    R = 287 # J/kg*K
+    c = 0.16 # m 
+
+##############################
+
+    # Reads csv file to find all values for p, delta p and T
+    with open ( "Experimental\Ambient_Results\converted_2D.csv" , 'r') as raw_2D_data: 
+        reader = csv.reader(raw_2D_data)
+        P_bar = []
+        T = []
+        Delta_P = []
+        for row in reader:
+            P_bar.append(100*float(row[4]))  #converted to pascals
+            T.append(273.15+float(row[5]))  #converted to K
+            Delta_P.append(float(row[3]))
+
+########################
+
+#### Formulas for the Calculation of the Needed Values ####
+    run_numer_index = int(run_number-6)
+    mu = mu_zero * (( T[run_numer_index] / T_zero ) ** ( 3 / 2 )) * (( T_zero + S )/( T[run_numer_index] + S )) 
+    q_inf = 0.211804 + 1.928442 * Delta_P[run_numer_index] + (1.879374 * 10 ** (-4)) * Delta_P[run_numer_index] ** 2
+    rho = P_bar[run_numer_index] / (R * T[run_numer_index])
+    P_s = P_bar[run_numer_index] - q_inf
+    U_inf = math.sqrt((2 * q_inf)/rho)
+    Re = (rho * U_inf * c) / mu
+
+    return (mu,q_inf,rho,P_s,U_inf,Re)
 
 
 
 
-import Ambient_Results.ambient_results_rho as ar
 
 #change depending on which row
-row_number = 12
+row_number = 57
+row_number_adjusted = row_number + 6
 
-density=ar.get_ambient_results_new(row_number)[0]
-print(density)
+density=get_ambient_results_new(row_number_adjusted)[2]
+U_inf=get_ambient_results_new(row_number_adjusted)[4]
+
 
 
 # Read the data from the file, skipping the first row
@@ -27,6 +66,9 @@ data = pd.read_csv("Experimental/2D/raw_2D.txt", sep='\\s+', skiprows=1)
 
 # Display the first few rows to verify
 print(data.head(3))
+
+AoA= data.iloc[row_number,2]
+print(AoA)
 
 
 
@@ -106,8 +148,11 @@ for i in range(47):
         p_dynamic.append(dynamic)
 
 velocity=[]
+free_stream=[]
 for i in range(47):
-    speed= math.sqrt(p_dynamic[i]/density)
+    speed= math.sqrt(2*p_dynamic[i]/density)
+    velocity.append(speed)
+    free_stream.append(U_inf)
 
 
 
@@ -116,17 +161,23 @@ for i in range(47):
 
 
 # #plot the thingies
-plt.plot(x_dist_tot, p_tot)
-plt.plot(x_dist_stat,p_stat)
-plt.plot(x_dist_tot,p_dynamic)
+# plt.plot(x_dist_tot, p_tot)
+# plt.plot(x_dist_stat,p_stat)
+# plt.plot(x_dist_tot,p_dynamic)
+plt.plot(x_dist_tot,velocity)
+plt.plot(x_dist_tot,free_stream, "--")
 
 # Add a title, axis labels, and a legend
-plt.title('One period of the sine and cosine functions')
-plt.xlabel('x [rad]')
-plt.ylabel('y')
-plt.legend(('sin(x)', 'cos(x)',"cool line"))
+plt.title("The wake velocity field at {} AoA ".format(AoA))
+plt.xlabel('Position [mm]')
+plt.ylabel('Velocity [ms^-1]')
+plt.legend(("Computed Velocity from wake", "Computed Free Stream velocity"))
 
+plt.xticks(np.arange(0, 250, step=50))
+plt.yticks(np.arange(15, 26, step=1))
+
+plt.ylim(15, 24)
+plt.grid()
 # Don't forget to call show()!
 plt.show()
 
-print(len(x_dist_tot))
