@@ -51,6 +51,6 @@ for line in data_lines:
 runXdata = Data2D[runNumber-6] #select only one run
 # print(runXdata)
 print(runXdata[8:57])
-
-q_inf = ar.get_ambient_results_new(runNumber)[1]
+name = "Experimental\\Ambient_Results\\converted_2D.csv"
+q_inf = ar.get_ambient_results_new(name, runNumber)[1]
 print(q_inf)
