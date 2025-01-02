@@ -5,8 +5,6 @@ import math
 # from ambient_results_rho import q_inf
 import matplotlib.pyplot as plt
 
-
-print("C$_{\text{p}}$")
 S = 2*0.16*0.4169
 A = (2*0.4169)**2/S
 print('A', A)
@@ -238,7 +236,7 @@ for i in range(len(alpha_lstV)):
     delta = abs(CDi_lstV[i]/(CL_lstV[i]**2)*math.pi*A - 1)
     delta_lstV.append(delta)
 
-print(delta_lstV)
+print('Delta viscous', delta_lstV)
 
 def remove_outliers_z_score(data, threshold=3):
     mean = np.mean(data)
@@ -354,6 +352,16 @@ a = 0.06714*180/math.pi
 a0 = 0.09483333333*180/math.pi  
 print('a0', a0)
 tau = (a0/a-1)/(a0/(math.pi*A))-1
+
+plt.plot(alpha_lstV, delta_lstV, color='red', label='$\\delta$ from XFLR5')
+plt.axhline(y=tau, xmin=alpha_lstV[0], xmax=alpha_lstV[-1], color='blue', linestyle='--', label='$\\tau$ from experimental data')
+plt.xlabel('Angle of attack $\\alpha$ [$\\deg$]')
+plt.ylabel('Induced drag efficiency $\\delta$ [-]')
+plt.legend()
+plt.grid(True)
+plt.title('Induced drag efficiency as a function of angle of attack')
+plt.show()
+
 print('tau', tau)
 print('A', A)
 CDi_real_lst = []
