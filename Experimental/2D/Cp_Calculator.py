@@ -7,7 +7,7 @@ def CpCalc(runNumber):
     Data2D = []
 
     # Read the text file and extract data from the "Freestream speed" section
-    with open("Experimental/2D/raw_2D.txt", "r") as file:
+    with open("Experimental/2D/raw_2DNew.txt", "r") as file:
         lines = file.readlines()
 
     # Find the start of the "Freestream speed" data
@@ -66,47 +66,4 @@ def CpCalc(runNumber):
     x_values_second_percent = [x / 100 for x in x_values_second] 
     return(Cp_first, x_values_first_percent, Cp_second, x_values_second_percent, runXdata)
 
-def PCalc(runNumber):
-    Data2D = []
-
-    # Read the text file and extract data from the "Freestream speed" section
-    with open("Experimental/2D/raw_2D.txt", "r") as file:
-        lines = file.readlines()
-
-    # Find the start of the "Freestream speed" data
-    start_idx = None
-    for i, line in enumerate(lines):
-        if "Run_nr" in line.strip():  # Search for the "Freestream speed" line
-            start_idx = (
-                i + 2
-            )  # Skip the header and start with the data (2 lines after "Freestream speed")
-            break
-
-    # Check if we found the "Freestream speed" section
-    if start_idx is None:
-        print("Error: 'Run_nr' section not found!")
-    else:
-        # print(f"Data starts from line {start_idx}")
-        pass
-
-    # Extract the rows under the "Freestream speed" section
-    data_lines = lines[start_idx:]
-
-
-    # Process each line to extract the values
-    for line in data_lines:
-        # Strip leading/trailing spaces and split by any whitespace (tabs, spaces, etc.)
-        columns = line.strip().split() #columns = one row of data starting from row 3
-        Data2D.append(columns)
-        
-    runXdata = Data2D[runNumber-6] #select only one run
-    # print(runXdata)
-    pValues = runXdata[8:56]
-    pValuesUpper = pValues[:24]
-
-    pValuesLower = pValues[25:]
-
-    
-    # print(pValuesUpper, dydx_upper, pValuesLower, dydx_lower)
-    return (pValuesUpper, dydx_upper, pValuesLower, dydx_lower)
 
