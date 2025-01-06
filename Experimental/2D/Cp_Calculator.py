@@ -1,18 +1,7 @@
-import matplotlib.pyplot as plt
 import sys
-
-# caution: path[0] is reserved for script path (or '' in REPL)
 sys.path.insert(1, 'Experimental')
 
 import Ambient_Results.ambient_results_rho as ar
-
-####################################################################
-############## ONLY CHANGE VARIABLES IN THIS BOX ###################
-runNumber = 32                                                  ####
-#                                                               ####
-#                                                               ####
-####################################################################
-######### DO NOT CHANGE ANYTHING AFTER THIS POINT ##################
 
 def CpCalc(runNumber):
     Data2D = []
@@ -75,4 +64,4 @@ def CpCalc(runNumber):
 
     x_values_first_percent = [x / 100 for x in x_values_first]  # Normalize to 0-1
     x_values_second_percent = [x / 100 for x in x_values_second] 
-    return(Cp_first, x_values_first, Cp_second, x_values_second)
+    return(Cp_first, x_values_first, Cp_second, x_values_second, runXdata)
