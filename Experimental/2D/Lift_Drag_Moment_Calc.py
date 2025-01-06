@@ -4,7 +4,7 @@ import Cp_Calculator as CC  # Importing your existing function
 
 
 # Example usage with RunNumber
-RunNumber = 10  # Change this to the actual run number you want to analyze
+RunNumber = 27  # Change this to the actual run number you want to analyze
 
 
 def calculate_cn(Cp_upper, x_upper, Cp_lower, x_lower):
@@ -18,17 +18,13 @@ def calculate_cn(Cp_upper, x_upper, Cp_lower, x_lower):
     x_upper = np.array(x_upper)
     x_lower = np.array(x_lower)
 
-    # Check if the x values are of unequal length, adjust the size by interpolation
-    if len(Cp_upper) != len(Cp_lower):
-        # You can interpolate the lower Cp values to match the upper Cp values
-        x_common = np.linspace(x_lower[0], x_lower[-1], len(Cp_upper))
-        Cp_lower = np.interp(x_common, x_lower, Cp_lower)
-        x_lower = x_common
-
     # Use scipy.integrate.trapezoid for numerical integration with non-uniform spacing
-    integral_upper = trapezoid(Cp_upper, x_upper)  # Integral of Cp over x/c (upper)
-    integral_lower = trapezoid(Cp_lower, x_lower)  # Integral of Cp over x/c (lower)
-
+    integral_upper = 0 # Integral of Cp over x/c (upper)
+    for i in range(len(Cp_upper)-1):
+        integral_upper += (Cp_upper[i]+Cp_upper[i+1])/2*(-x_upper[i]+x_upper[i+1])
+    integral_lower = 0 # Integral of Cp over x/c (lower)
+    for i in range(len(Cp_lower)-1):
+        integral_lower += (Cp_lower[i]+Cp_lower[i+1])/2*(-x_lower[i]+x_lower[i+1])
     # Compute final Cn
     Cn = integral_lower - integral_upper
     return Cn
@@ -53,6 +49,19 @@ def calculate_cm(Cp_upper, x_upper, Cp_lower, x_lower):
     Cm = integral_upper - integral_lower
     return Cm
 
+
+def calculate_cd(rho, U_inf, p_inf, chord):
+    D = 0
+
+    u1 =  
+    y1 = 
+    p1 = 
+
+
+
+    Cd = D/( rho * U_inf ** 2 * chord )
+
+    return(Cd)
 # Init CpCalculator
 Cp_upper, x_upper, Cp_lower, x_lower, runXdata = CC.CpCalc(RunNumber)
 
@@ -67,3 +76,4 @@ Cl = Cn *(np.cos(alpha)+(np.sin(alpha)**2)/(np.cos(alpha)))-Cd *np.tan(alpha)
 
 print(f"Calculated Cn: {Cn:.4f} \nCalculated Cm: {Cm:.4f}\nCalculated Cm0: {Cm0:.4f}\nCalculated CoP: {CoP:.4f}\nCalculated Cd: {Cd:.4f}\nCalculated Cl: {Cl:.4f}\nAngle of Attack: {alpha:.4f}")
 
+# print(CC.CpCalc(RunNumber))
