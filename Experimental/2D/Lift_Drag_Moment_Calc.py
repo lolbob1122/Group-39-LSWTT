@@ -1,10 +1,10 @@
 import numpy as np
 from scipy.integrate import trapezoid  # Import trapezoid instead of using np.trapz
 import Cp_Calculator as CC  # Importing your existing function
-
+import matplotlib.pyplot as plt
 
 # Example usage with RunNumber
-RunNumber = 27  # Change this to the actual run number you want to analyze
+RunNumber = 45  # Change this to the actual run number you want to analyze
 
 
 def calculate_cn(Cp_upper, x_upper, Cp_lower, x_lower):
@@ -29,7 +29,6 @@ def calculate_cn(Cp_upper, x_upper, Cp_lower, x_lower):
     Cn = integral_lower - integral_upper
     return Cn
 
-
 def calculate_cm(Cp_upper, x_upper, Cp_lower, x_lower):
     """
     Calculate the moment coefficient Cm using the given equation.
@@ -49,31 +48,84 @@ def calculate_cm(Cp_upper, x_upper, Cp_lower, x_lower):
     Cm = integral_upper - integral_lower
     return Cm
 
-
-def calculate_cd(rho, U_inf, p_inf, chord):
-    D = 0
-
-    u1 =  
-    y1 = 
-    p1 = 
-
-
-
-    Cd = D/( rho * U_inf ** 2 * chord )
-
-    return(Cd)
-# Init CpCalculator
-Cp_upper, x_upper, Cp_lower, x_lower, runXdata = CC.CpCalc(RunNumber)
+def calculate_cd(Cp_upper, dydx_upper, Cp_lower, dydx_lower, x_upper, x_lower):
+    p_upper = Cp_upper[:-1]
+    p_lower = Cp_lower[:-1]
+    p_upper = np.array(p_upper, dtype=float)
+    p_lower = np.array(p_lower, dtype=float)
+    yx_upper = np.array(dydx_upper, dtype=float)
+    yx_lower = np.array(dydx_lower, dtype=float)
+    x_upper = x_upper[:-1]
+    x_upper= np.array(x_upper)
+    x_lower = x_lower[:-1]
+    x_lower = np.array(x_lower)
+    Ct = trapezoid(p_upper * yx_upper, x_upper) +  trapezoid(p_lower * yx_lower, x_lower)
+    return(Ct)
 
 
-Cn = calculate_cn(Cp_upper, x_upper, Cp_lower, x_lower)
-Cm = calculate_cm(Cp_upper, x_upper, Cp_lower, x_lower)
-Cm0 = Cm + 0.25 *Cn 
-CoP = Cm/ -Cn
-Cd = 1 #TODO still
-alpha = float(runXdata[2])
-Cl = Cn *(np.cos(alpha)+(np.sin(alpha)**2)/(np.cos(alpha)))-Cd *np.tan(alpha)
+alphas = []  # List to store angle of attack values
+Cm_values = []  # List to store moment coefficient values
+Cl_values = []  # List to store lift coefficient values
+Cd_values = []  # List to store drag coefficient values
 
-print(f"Calculated Cn: {Cn:.4f} \nCalculated Cm: {Cm:.4f}\nCalculated Cm0: {Cm0:.4f}\nCalculated CoP: {CoP:.4f}\nCalculated Cd: {Cd:.4f}\nCalculated Cl: {Cl:.4f}\nAngle of Attack: {alpha:.4f}")
+for RunNumber in range(6,73):
+    # Init CpCalculator
+    Cp_upper, x_upper, Cp_lower, x_lower, runXdata = CC.CpCalc(RunNumber)
+    # Init PCalculator
 
-# print(CC.CpCalc(RunNumber))
+    dydx_upper = [2.165665525, 0.849096771, 0.548353145, 0.35236511, 0.239465629, 
+        0.169963946, 0.121411036, 0.083886391, 0.053005107, 0.026565375, 
+        0.002272881, -0.020972626, -0.043606397, -0.065714021, -0.086413264, 
+        -0.103453708, -0.116547646, -0.128316243, -0.13902106, -0.147261752, 
+        -0.152980211, -0.155104102, -0.151815517, -0.138933748]  
+    dydx_lower = [-1.32588178, -0.500836345, -0.27688194, -0.155201058, -0.093414928, 
+        -0.060490291, -0.039384731, -0.024605121, -0.01298194, -0.003192475, 
+            0.00545223, 0.013503413, 0.021308214, 0.029223946, 0.036812585, 
+            0.044788818, 0.052690642, 0.060176781, 0.066879119, 0.071721256, 
+            0.074426033, 0.075904576, 0.070171935]
+
+    # Calculate Values
+    Cn = calculate_cn(Cp_upper, x_upper, Cp_lower, x_lower)
+    Cm = calculate_cm(Cp_upper, x_upper, Cp_lower, x_lower)
+    CmQuarterChord = Cm + 0.25 *Cn 
+    CoP = Cm/ -Cn
+    Ct = calculate_cd(Cp_upper, dydx_upper, Cp_lower, dydx_lower, x_upper, x_lower)
+    alpha = float(runXdata[2]) *np.pi/180  
+    Cd = Ct * np.cos(alpha) + Cn * np.sin(alpha)
+    Cl = Cn *(np.cos(alpha)+(np.sin(alpha)**2)/(np.cos(alpha)))-Cd *np.tan(alpha)
+
+    alphas.append(alpha)  # Convert alpha to degrees for better visualization
+    Cm_values.append(Cm)
+    Cl_values.append(Cl)
+    Cd_values.append(Cd)
+
+    # print(f"Calculated Cn: {Cn:.4f} \nCalculated Cm: {Cm:.4f}\nCalculated Cm0: {CmQuarterChord:.4f}\nCalculated CoP: {CoP:.4f}\nCalculated Cd: {Cd:.4f}\nCalculated Cl: {Cl:.4f}\nAngle of Attack: {alpha:.4f}")
+
+plt.figure(figsize=(10, 6))
+plt.plot(alphas, Cm_values, label='$C_m$', color='b', marker='o')
+plt.xlabel('Angle of Attack (degrees)')
+plt.ylabel('$C_m$')
+plt.title('Moment Coefficient ($C_m$) vs Angle of Attack ($\\alpha$)')
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# Plotting Cl vs Alpha
+plt.figure(figsize=(10, 6))
+plt.plot(alphas, Cl_values, label='$C_l$', color='g', marker='s')
+plt.xlabel('Angle of Attack (degrees)')
+plt.ylabel('$C_l$')
+plt.title('Lift Coefficient ($C_l$) vs Angle of Attack ($\\alpha$)')
+plt.grid(True)
+plt.legend()
+plt.show()
+
+# Plotting Cd vs Alpha
+plt.figure(figsize=(10, 6))
+plt.plot(alphas, Cd_values, label='$C_d$', color='r', marker='^')
+plt.xlabel('Angle of Attack (degrees)')
+plt.ylabel('$C_d$')
+plt.title('Drag Coefficient ($C_d$) vs Angle of Attack ($\\alpha$)')
+plt.grid(True)
+plt.legend()
+plt.show()

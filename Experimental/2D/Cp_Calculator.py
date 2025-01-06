@@ -101,4 +101,12 @@ def PCalc(runNumber):
         
     runXdata = Data2D[runNumber-6] #select only one run
     # print(runXdata)
-    pValues = runXdata[57:]
+    pValues = runXdata[8:56]
+    pValuesUpper = pValues[:24]
+
+    pValuesLower = pValues[25:]
+
+    
+    # print(pValuesUpper, dydx_upper, pValuesLower, dydx_lower)
+    return (pValuesUpper, dydx_upper, pValuesLower, dydx_lower)
+
