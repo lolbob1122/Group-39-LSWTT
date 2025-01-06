@@ -67,6 +67,12 @@ def CpCalc(runNumber):
     # print(PosList)
     # Extract the second column from PosList and convert it to floats
     x_values = [float(row[1]) for row in PosList]  # Only take the first 49 entries
-    x_values_percent = [x / 100 for x in x_values]
+    x_values_first = x_values[:25]
+    Cp_first = Cp[:25]
 
-    return(Cp, x_values_percent)
+    x_values_second = x_values[25:]
+    Cp_second = Cp[25:]
+
+    x_values_first_percent = [x / 100 for x in x_values_first]  # Normalize to 0-1
+    x_values_second_percent = [x / 100 for x in x_values_second] 
+    return(Cp_first, x_values_first, Cp_second, x_values_second)
