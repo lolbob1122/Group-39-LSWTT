@@ -11,6 +11,7 @@ data = pd.read_csv(file_path, delim_whitespace=True, header=1)
 
 # Extract column names dynamically
 column_names = data.columns
+print(column_names)
 
 # Create individual lists for each parameter based on the dynamic column names
 parameter_lists = {name: data[name].tolist() for name in column_names}
@@ -19,24 +20,27 @@ parameter_lists = {name: data[name].tolist() for name in column_names}
 # C_l = Fy / 0.5*rho*V^2*S
 
 Fy = parameter_lists['N.1']
+Fx = parameter_lists['N']
 Alpha = parameter_lists['degrees']
 
 C_l = []
+C_d = []
 
-for i in range(0,73, 1): 
+for i in range(0,58, 1): 
     C_l.append(Fy[i] / (0.5 * 1.190 * 20.63985**2 * 0.4169 * 0.16))
+    C_d.append(Fx[i] / (0.5 * 1.190 * 20.63985**2 * 0.4169 * 0.16))
 
 # print('C_L:',C_l)
 # print('Alpha:',Alpha)
 # Plot Fy against Alpha if both columns exist
 # Plot Alpha vs C_l
-plt.figure(figsize=(8,6))
-plt.plot(Alpha, C_l, marker='o', linestyle='-', color='b')
-plt.title('Lift Coefficient (C_l) vs Angle of Attack (Alpha)')
-plt.xlabel('Angle of Attack (Alpha) [degrees]')
-plt.ylabel('Lift Coefficient (C_l)')
-plt.grid(True)
-plt.show()
+# plt.figure(figsize=(8,6))
+# plt.plot(Alpha, C_l, marker='o', linestyle='-', color='b')
+# plt.title('Lift Coefficient (C_l) vs Angle of Attack (Alpha)')
+# plt.xlabel('Angle of Attack (Alpha) [degrees]')
+# plt.ylabel('Lift Coefficient (C_l)')
+# plt.grid(True)
+# plt.show()
 
 # Calculate the slope of the linear section
 # Define a range for the linear section (e.g., where Alpha is between 5 and 15)
@@ -45,7 +49,7 @@ slope = (C_l[35] - C_l[0])/(Alpha[35] - Alpha[0])
 
 # Perform a linear fit (least squares method)
 
-print(f"Slope of the linear section: {slope}")
+# print(f"Slope of the linear section: {slope}")
 
 # Now calculate the efficiency factor 
 a_0 = 0.0948333 *180 / math.pi
@@ -54,7 +58,31 @@ AR = 5.21125
 
 efficiency_factor = (a_0/a - 1)*(math.pi * AR / a_0) - 1
 
-print(efficiency_factor)
+# print(efficiency_factor)
 # # Print each parameter list with its name (example)
 # for parameter, values in parameter_lists.items():
 #     print(f"{parameter}: {values[:5]} ...")  # Print the first 5 values as a preview
+
+
+#2D values 
+
+twod_cl_values = [-0.2900053479915332, -0.23403311339675137, -0.18636422794340737, -0.14288753083881486, -0.11126393669497235, -0.08265328037119031, -0.04244231467451166, -0.04270419992145707, -0.003639503983339572, 0.03991464157354246, 0.08235939357500417, 0.13909904607836387, 0.20907642088778863, 0.26754436490905675, 0.3137810797773096, 0.35914160003837386, 0.4005090000279034, 0.4372463159369599, 0.48522469308636856, 0.534217620780282, 0.5877623519587508, 0.6255330372979283, 0.6702316737657392, 0.7127810038667417, 0.7550611670969051, 0.7998550814815991, 0.8346287297737883, 0.8739483859916466, 0.9120818174338547, 0.9499116768290174, 0.980356326108971, 0.9913468397879146, 0.9872799095326563, 1.0047539108042631, 1.0063669387360465, 0.9914981692204832, 0.9835656277916889, 0.9951785150748581, 1.0017233246736927, 1.0088618311886337, 1.0073695051061122, 1.007428094979088, 1.0132895343440085, 1.0188843001249366, 1.031268355804076, 1.0351714759039952, 1.0213035930214565, 0.9788970984639884, 0.9635914514984015, 0.9291523633645932, 0.9006767388827259, 0.9883142214138075, 0.903652837377328, 0.832568068998606]
+twod_cd_values = [0.07966708099755826, 0.06866701945283299, 0.05989817006262303, 0.0513252736046115, 0.04430306342476757, 0.038095475941245995, 0.031033132216336485, 0.031211683319787575, 0.02517720197618604, 0.01965820981819297, 0.014612943976786847, 0.010406770928768684, 0.0065800776652408435, 0.004123773234352727, 0.0019173208158640986, 0.0007500299712905056, 8.944773188089214e-05, -0.00017042996743837566, 0.0008343420105380965, 0.0021114457038923576, 0.004455963565288122, 0.007227587619990428, 0.010608274750917135, 0.014532266656316559, 0.018950700942450438, 0.02438859200411457, 0.030026059373440495, 0.036453692449334135, 0.04350230886384082, 0.050955664490332314, 0.058512667813942015, 0.06230037958020235, 0.06347790387779614, 0.06626712445648451, 0.0682214644562506, 0.06931306145058116, 0.07028432507265338, 0.07298676511126449, 0.0749451594528214, 0.07669498025317602, 0.07750797874189659, 0.0773321327403737, 0.07843115120754066, 0.07868205765008773, 0.0802834910008067, 0.0811387687998702, 0.08415239469638097, 0.08403014290552555, 0.09019432026421914, 0.09679954059626623, 0.10633910789340896, 0.20005741819383116, 0.2085027836435061, 0.2086240717032799]
+twod_alphas = [-5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 11.0, 11.1, 11.2, 11.3, 11.4, 12.0, 12.5, 13.0, 13.5, 14.0, 14.5, 15.0, 15.5]
+
+
+# Plotting the C_l alpha graphs 
+plt.plot(Alpha[:58], C_l, label = '3D Wing', linestyle='-', color='b')
+plt.plot(twod_alphas, twod_cl_values, label = '2D Wing', linestyle='-', color='r')
+plt.xlabel('Angle of Attack (Alpha) [degrees]')
+plt.ylabel('Lift Coefficient (C_l)')
+plt.legend()
+plt.show()
+
+#Plotting the C_d alpha graphs 
+plt.plot(Alpha[:58], C_d, label = '3D Wing', linestyle='-', color='b')
+plt.plot(twod_alphas, twod_cd_values, label = '2D Wing', linestyle='-', color='r')
+plt.xlabel('Angle of Attack (Alpha) [degrees]')
+plt.ylabel('Drag Coefficient (C_d)')
+plt.legend()
+plt.show()

@@ -7,7 +7,7 @@ def CpCalc(runNumber):
     Data2D = []
 
     # Read the text file and extract data from the "Freestream speed" section
-    with open("Experimental/2D/raw_2D.txt", "r") as file:
+    with open("Experimental/2D/raw_2DNew.txt", "r") as file:
         lines = file.readlines()
 
     # Find the start of the "Freestream speed" data
@@ -64,4 +64,6 @@ def CpCalc(runNumber):
 
     x_values_first_percent = [x / 100 for x in x_values_first]  # Normalize to 0-1
     x_values_second_percent = [x / 100 for x in x_values_second] 
-    return(Cp_first, x_values_first, Cp_second, x_values_second, runXdata)
+    return(Cp_first, x_values_first_percent, Cp_second, x_values_second_percent, runXdata)
+
+
