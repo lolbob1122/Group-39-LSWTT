@@ -9,7 +9,7 @@ import Ambient_Results.ambient_results_rho as ar
 
 ####################################################################
 ############## ONLY CHANGE VARIABLES IN THIS BOX ###################
-runNumber = 55                                               ####
+runNumber = 31                                               ####
 #                                                               ####
 #                                                               ####
 ####################################################################
@@ -69,20 +69,6 @@ with open("Experimental\\2D\\Airfoil_Tap_Positions.txt", "r") as file:
 # Extract the second column from PosList and convert it to floats
 x_values = [float(row[1]) for row in PosList[:49]]  # Only take the first 49 entries
 
-# # Ensure Cp and x_values are the same length
-# if len(Cp) != len(x_values):
-#     print("Error: Mismatch in lengths of Cp and x_values")
-# else:
-#     # Plot Cp vs x_values
-#     plt.figure(figsize=(10, 6))
-#     plt.plot(x_values, Cp, marker='o', linestyle='-', color='b', label='Cp vs Position')
-#     plt.title(f'Pressure Coefficient (Cp) vs Airfoil Tap Positions (Run {runNumber})')
-#     plt.xlabel('Tap Position (x-axis)')
-#     plt.ylabel('Pressure Coefficient (Cp)')
-#     plt.grid(True)
-#     plt.legend()
-#     plt.show()
-
 # Split x_values and Cp into two segments
 x_values_first = x_values[:25]
 Cp_first = Cp[:25]
@@ -95,8 +81,7 @@ x_values_second_percent = [x / 100 for x in x_values_second]  # Normalize to 0-1
 
 # Plot the two segments separately
 plt.figure(figsize=(10, 6))
-# plt.plot(x_values_first, Cp_first, marker='o', linestyle='-', color='b', label='Cp (Upper Surface)')
-# plt.plot(x_values_second, Cp_second, marker='x', linestyle='-', color='r', label='Cp (Lower Surface)')
+
 plt.plot(
     x_values_first_percent, Cp_first, marker="o", linestyle="-", color="b", label="$C_p$ (Upper Surface)"
 )
@@ -106,9 +91,10 @@ plt.plot(
 
 
 # plt.title(f'Pressure Coefficient ($C_p$) vs Airfoil Tap Positions (Angle of Attack (α) = {runXdata[2]}°)')
-plt.xlabel('Tap Position (x/c)')
-plt.ylabel('Pressure Coefficient ($C_p$)')
+plt.xlabel('Tap Position (x/c)',  fontsize=18)
+plt.ylabel('Pressure Coefficient ($C_p$)',  fontsize=18)
 plt.gca().invert_yaxis()
 plt.grid(True)
-plt.legend()
+plt.legend(fontsize=14)
 plt.show()
+

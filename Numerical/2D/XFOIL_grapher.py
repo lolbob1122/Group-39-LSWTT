@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 
 
 def parse_xfoil_polar(filepath):
@@ -72,35 +73,85 @@ def parse_xfoil_polar(filepath):
 
 
 def plot_cl_curve(alpha, cl):
-    """
-    Plots C_L vs alpha from the parsed data.
-    """
-    plt.figure(figsize=(8, 6))
-    plt.plot(alpha, cl, marker='none', linestyle='-', color='blue', label='C_l')
-    plt.title("Airfoil Polar: C_l vs. alpha")
-    plt.xlabel("Angle of Attack (deg)")
-    plt.ylabel("C_l")
-    plt.grid(True)
-    plt.legend()
+    plt.figure(figsize=(8, 5))
+
+    # Plot the curve
+    plt.plot(alpha, cl, '-', color='blue', label=r'$C_L$', linewidth=1.5)
+
+    # Formatting the graph
+    plt.xlabel("Angle of Attack (deg)", fontsize=12)
+    plt.ylabel(r"$C_L$", fontsize=12)
+
+    # Customize grid lines
+    ax = plt.gca()
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(2))
+    ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(0.2))
+    ax.yaxis.set_minor_locator(ticker.MultipleLocator(0.05))
+
+    plt.grid(visible=True, which='major', color='black', linestyle='-', alpha=0.5)
+    plt.grid(visible=True, which='minor', color='gray', linestyle='--', alpha=0.3)
+
+    # Customize origin lines
+    ax.spines['bottom'].set_color('black')  # x-axis
+    ax.spines['left'].set_color('black')  # y-axis
+    ax.spines['bottom'].set_linewidth(1.5)
+    ax.spines['left'].set_linewidth(1.5)
+
+    # Hide unnecessary spines
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+
+    # Add a legend
+    plt.legend(fontsize=12, loc='upper left', frameon=True)
+
+    plt.tight_layout()
     plt.show()
 
+
+
 def plot_cd_curve(alpha, cd):
-    """
-    Plots C_L vs alpha from the parsed data.
-    """
-    plt.figure(figsize=(8, 6))
-    plt.plot(alpha, cd, marker='none', linestyle='-', color='blue', label='C_d')
-    plt.title("Airfoil Polar: C_d vs. alpha")
-    plt.xlabel("Angle of Attack (deg)")
-    plt.ylabel("C_d")
-    plt.grid(True)
-    plt.legend()
+    plt.figure(figsize=(8, 5))
+
+    # Plot the curve
+    plt.plot(alpha, cd, '-', color='green', label=r'$C_D$', linewidth=1.5)
+
+    # Formatting the graph
+    plt.xlabel("Angle of Attack (deg)", fontsize=12)
+    plt.ylabel(r"$C_D$", fontsize=12)
+
+    # Customize grid lines
+    ax = plt.gca()
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(2))
+    ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(0.02))
+    ax.yaxis.set_minor_locator(ticker.MultipleLocator(0.005))
+
+    plt.grid(visible=True, which='major', color='black', linestyle='-', alpha=0.5)
+    plt.grid(visible=True, which='minor', color='gray', linestyle='--', alpha=0.3)
+
+    # Customize origin lines
+    ax.spines['bottom'].set_color('black')  # x-axis
+    ax.spines['left'].set_color('black')  # y-axis
+    ax.spines['bottom'].set_linewidth(1.5)
+    ax.spines['left'].set_linewidth(1.5)
+
+    # Hide unnecessary spines
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+
+    # Add a legend
+    plt.legend(fontsize=12, loc='upper left', frameon=True)
+
+    plt.tight_layout()
     plt.show()
+
+
 
 def main():
     # Path to your XFOIL polar output file.
     # Replace 'polar_output.txt' with the actual filename.
-    filepath = 'C:\\Users\mikfe\OneDrive\Документы\GitHub\Group-39-LSWTT\\Numerical\\2D\XFLR5textfiles\Viscous21ms\XFOIL_RE_4x10^5_2.txt'
+    filepath = 'XFLR5textfiles/Viscous21ms/XFOIL_RE_4x10^5_2.txt'
 
     alpha, cl, cd, cdp, cm, top_xtr, bot_xtr = parse_xfoil_polar(filepath)
     plot_cl_curve(alpha, cl)
