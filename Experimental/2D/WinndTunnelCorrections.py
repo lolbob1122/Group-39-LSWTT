@@ -2,6 +2,7 @@ from math import pi, sin, sqrt
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
+from Lift_Drag_Moment_Calc import Cd_values, Cl_values, Cm_values, alphas
 
 # Constants
 mu_zero = 1.716 * 10**(-5) # kg/m*s
@@ -51,11 +52,23 @@ def get_ambient_results_new(): # makes a function so luca can call it
 
 mu_List = get_ambient_results_new()[0]
 q_inf_List = get_ambient_results_new()[1]
+print(len(q_inf_List))
 rho_List = get_ambient_results_new()[2]
 U_inf_List = get_ambient_results_new()[4]
 Re_List = get_ambient_results_new()[5]
 alpha_List = get_ambient_results_new()[6]
+print(alpha_List[52:54])
+print(alphas)
 T_infty = get_ambient_results_new()[7]
+
+del alpha_List[52:55]
+del alpha_List[54:]
+del rho_List[52:55]
+del rho_List[54:]
+del q_inf_List[52:55]
+del q_inf_List[54:]
+del T_infty[52:55]
+del T_infty[54:]
 
 # Test data !!! NOT REAL !!!
 
@@ -136,7 +149,7 @@ def get_corrected_CdClCmalpha(U_infty, T_infty, Cd_u, Cdm, Cdi, Cl_u, Cm_u, alph
     beta = (1-M**2)**0.5
     tcRatio = 0.1037
     c = 0.16  # m
-    h = 1.25  # change value
+    h = 0.6  # change value
     A = Area  # change value
     Cd_s = Cd_u-Cdi-Cdm
     Re_u = c*rho*U_infty/mu
@@ -186,20 +199,20 @@ def get_corrected_CdClCmalpha_lst(T_infty, Cd_u, Cl_u, Cm_u, alpha_u, q_infty, r
         beta = (1-M**2)**0.5
         tcRatio = 0.1037
         c = 0.16  # m
-        h = 1.25  # change value
-        A = Area  # change value
+        h = 0.35  # m
+        A = Area  # 
         Cdi = Cl_u[i]*sin(alpha_u[i]/180*pi)  # Check and add Cdi to variable input for function 
         Cd_s = Cd_u[i]-Cdi-Cdm
         Re_u = c*rho[i]*U_infty/mu
 
         # Interference factors
-        Es = 0.524*(1+1.2*beta*tcRatio)*A/(beta**3*h**2)
+        Es = (1+1.2*beta*tcRatio)*A/(beta**3*h**2)
         Ew = 0.25*c/h*(1+0.4*M**2)/(beta**2)*Cd_u[i]
         Esep = 0.5*0.96*c/h*Cd_s
         Et = Es+Ew+Esep
 
         # Coefficient changes
-        DeltaCd_g = -(Cdm+Cd_s)*(1+0.4*M**2)*Es
+        DeltaCd_g = -(Cdm+Cd_s)*(1+0.4*M**2)*Es/0.24
         DeltaAlpha = pi*c**2/(96*beta*h**2)*(Cl_u[i]+4*Cm_u[i])-7*pi**3*c**4*Cl_u[i]/(30720*beta**3*h**4)
         DeltaCl = Cl_u[i]*(-pi**2/48*(c/(beta*h))**2+7*pi**4/3072*(c/(beta*h))**4)
         DeltaCm = Cl_u[i]*(pi**2/192*(c/(beta*h))**2-7*pi**4/15360*(c/(beta*h))**4)
@@ -217,7 +230,7 @@ def get_corrected_CdClCmalpha_lst(T_infty, Cd_u, Cl_u, Cm_u, alpha_u, q_infty, r
         alpha_c = alpha_u[i] + DeltaAlpha
         Cl_c = (Cl_u[i]+DeltaCl)*q_infty[i]/q_c
         Cd_c = (Cd_u[i]+DeltaCd_g)*q_infty[i]/q_c
-        Cm_c = (Cl_u[i]+DeltaCm)*q_infty[i]/q_c
+        Cm_c = (Cm_u[i]+DeltaCm)*q_infty[i]/q_c
 
         # Add results to lists
         Es_lst.append(Es)
@@ -229,72 +242,91 @@ def get_corrected_CdClCmalpha_lst(T_infty, Cd_u, Cl_u, Cm_u, alpha_u, q_infty, r
         Cd_c_lst.append(Cd_c)
         Cm_c_lst.append(Cm_c)
 
-    plt.plot(alpha_c_lst, Es_lst, color='red', label='$\\epsilon_s$')
-    plt.plot(alpha_c_lst, Ew_lst, color='green', label='$\\epsilon_w$')
-    plt.plot(alpha_c_lst, Esep_lst, color='blue', label='$\\epsilon_{sep}$')
-    plt.plot(alpha_c_lst, Et_lst, color='black', label='$\\epsilon_t$')
-    plt.xlabel("$\\alpha_c$ [$\\deg$]")
-    plt.ylabel("Interference factors $\\epsilon$ [-]")
+    markevery = [(i % 1 == 0 and not (32 <= i <= 44)) for i in range(len(alpha_c_lst))]
+
+    plt.subplot(1, 2, 1)
+    plt.plot(alpha_c_lst, Es_lst, color='purple', linestyle='-', markevery=markevery,linewidth=1, markeredgewidth=0.5, marker='x', markerfacecolor='none', markersize=5, markeredgecolor='purple', label='$\\epsilon_s$')
+    plt.plot(alpha_c_lst, Ew_lst, color='green', linestyle='-', markevery=markevery,linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='green',label='$\\epsilon_w$')
+    plt.plot(alpha_c_lst, Esep_lst, color='blue', linestyle='-', markevery=markevery,linewidth=1, markeredgewidth=0.5,marker='v', markerfacecolor='none', markersize=5, markeredgecolor='blue',label='$\\epsilon_{sep}$')
+    plt.plot(alpha_c_lst, Et_lst, color='red', linewidth=1, markevery=markevery,markeredgewidth=0.5,marker='D',markerfacecolor='none', markersize=5, markeredgecolor='red',label='$\\epsilon_t$')
+    plt.plot(alpha_c_lst[32:44], Es_lst[32:44], color='purple', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5, marker='x', markerfacecolor='none', markersize=5, markeredgecolor='purple')
+    plt.plot(alpha_c_lst[32:44], Ew_lst[32:44], color='green', linestyle='none',markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='green')
+    plt.plot(alpha_c_lst[32:44], Esep_lst[32:44], color='blue', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='v', markerfacecolor='none', markersize=5, markeredgecolor='blue')
+    plt.plot(alpha_c_lst[32:44], Et_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='D',markerfacecolor='none', markersize=5, markeredgecolor='red')
+    plt.xlabel("$\\alpha_c$ [$\\deg$]", fontsize=12)
+    plt.ylabel("Interference factors $\\epsilon$ [-]", fontsize=12)
+    plt.ylim(-0.03, 0.04)
     plt.grid(True)
-    plt.legend()
+    plt.legend(fontsize=12)
     plt.title("Variation of interference factors with $\\alpha_c$")
+
+    plt.subplot(1, 2, 2)
+    plt.plot(alpha_c_lst, Et_lst, color='red', linewidth=1, markevery=markevery,markeredgewidth=0.5,marker='D',markerfacecolor='none', markersize=5, markeredgecolor='red',label='$\\epsilon_t$')
+    plt.plot(alpha_c_lst[32:44], Et_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='D',markerfacecolor='none', markersize=5, markeredgecolor='red')
+    plt.xlabel("$\\alpha_c$ [$\\deg$]", fontsize=12)
+    plt.ylabel("Total interference factor $\\epsilon_t$ [-]", fontsize=12)
+    plt.ylim(-0.03, 0.04)
+    plt.grid(True)
+    plt.legend(fontsize=12)
+    plt.title("Variation of total interference factor with $\\alpha_c$")
+    plt.tight_layout()
     plt.show()
 
-    plt.plot(alpha_u, q_inf_ratio_lst, color='red', label='$\\frac{q_{\\infty_u}}{q_{\\infty_c}}$')
-    plt.plot(alpha_u, Re_ratio_lst, color='green', label='$\\frac{Re_u}{Re_c}$')
-    plt.xlabel("$\\alpha$ [$\\deg$]")
-    plt.ylabel("Ratio's of uncorrected to corrected flow properties")
+    
+    
+    plt.plot(alpha_u, q_inf_ratio_lst, color='red', linewidth=1, markevery=markevery,markeredgewidth=0.5, linestyle='-', marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', label='$\\frac{q_{\\infty_u}}{q_{\\infty_c}}$')
+    plt.plot(alpha_u[32:44], q_inf_ratio_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+    plt.xlabel("$\\alpha$ [$\\deg$]", fontsize=12)
+    plt.ylabel("Dynamic pressure ratio", fontsize=12)
     plt.grid(True)
-    plt.legend()
-    plt.title("Ratio's of corrected flow properties")
+    plt.legend(fontsize=16)
+    #plt.title("Ratio's of corrected flow properties")
     plt.show()
 
-    plt.plot(alpha_u, Es_lst, color='red', label='$\\epsilon_s$')
-    plt.plot(alpha_u, Ew_lst, color='green', label='$\\epsilon_w$')
-    plt.plot(alpha_u, Esep_lst, color='blue', label='$\\epsilon_{sep}$')
-    plt.plot(alpha_u, Et_lst, color='black', label='$\\epsilon_t$')
-    plt.xlabel("$\\alpha_u$ [$\\deg$]")
-    plt.ylabel("Interference factors $\\epsilon$ [-]")
+
+    plt.plot(alpha_c_lst, Cl_c_lst, color='red', linewidth=1, markevery=markevery,marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5, label='$C_{l_c}$') 
+    plt.plot(alpha_u, Cl_u, color='blue', linewidth=1, markevery=markevery,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue', markeredgewidth=0.5, label='$C_{l_u}$')
+    plt.plot(alpha_c_lst[32:44], Cl_c_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+    plt.plot(alpha_u[32:44], Cl_u[32:44], color='blue', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue')
+    plt.xlabel("$\\alpha$ [$\\deg$]", fontsize=12)
+    plt.ylabel("Lift coefficient $C_l$ [-]", fontsize=12)
     plt.grid(True)
-    plt.legend()
-    plt.title("Variation of interference factors with $\\alpha_u$")
+    plt.legend(fontsize=16)
+    #plt.title("Lift curve comparison")
     plt.show()
 
-    plt.plot(alpha_c_lst, Cl_c_lst, color='red', label='$C_{l_c}$')
-    plt.plot(alpha_u, Cl_u, color='blue', label='$C_{l_u}$')
-    plt.xlabel("$\\alpha$ [$\\deg$]")
-    plt.ylabel("Lift coefficient $C_l$ [-]")
+    plt.plot(alpha_c_lst, Cd_c_lst, color='red', linewidth=1, markevery=markevery,marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5,label='$C_{d_c}$')
+    plt.plot(alpha_u, Cd_u, color='blue', linewidth=1, markevery=markevery,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue', markeredgewidth=0.5,label='$C_{d_u}$')
+    plt.plot(alpha_c_lst[32:44], Cd_c_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+    plt.plot(alpha_u[32:44], Cd_u[32:44], color='blue', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue')
+    plt.xlabel("$\\alpha$ [$\\deg$]", fontsize=12)
+    plt.ylabel("Drag coefficient $C_d$ [-]", fontsize=12)
     plt.grid(True)
-    plt.legend()
-    plt.title("Lift curve comparison")
+    plt.legend(fontsize=16)
+    #plt.title("Drag curve comparison", fontsize=12)
     plt.show()
 
-    plt.plot(alpha_c_lst, Cd_c_lst, color='red', label='$C_{d_c}$')
-    plt.plot(alpha_u, Cd_u, color='blue', label='$C_{d_u}$')
-    plt.xlabel("$\\alpha$ [$\\deg$]")
-    plt.ylabel("Drag coefficient $C_d$ [-]")
+    plt.plot(Cd_c_lst, Cl_c_lst, color='red', linewidth=1, markevery=markevery,marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5,label='Corrected')
+    plt.plot(Cd_u, Cl_u, color='blue', linewidth=1, markevery=markevery,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue', markeredgewidth=0.5,label='Uncorrected')
+    plt.plot(Cd_c_lst[32:44], Cl_c_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+    plt.plot(Cd_u[32:44], Cl_u[32:44], color='blue', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue')
+    plt.xlabel("Drag coefficient $C_d$ [-]", fontsize=12)
+    plt.ylabel("Lift coefficient $C_l$ [-]", fontsize=12)
     plt.grid(True)
     plt.legend()
-    plt.title("Drag curve comparison")
+    #plt.title("Drag polar comparison")
     plt.show()
 
-    plt.plot(Cd_c_lst, Cl_c_lst, color='red', label='Corrected')
-    plt.plot(Cd_u, Cl_u, color='blue', label='Uncorrected')
-    plt.xlabel("Drag coefficient $C_d$ [-]")
-    plt.ylabel("Lift coefficient $C_l$ [-]")
+    plt.plot(alpha_c_lst, Cm_c_lst, color='red', linewidth=1, markevery=markevery,marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5,label='$C_{m_c}$')
+    plt.plot(alpha_u, Cm_u, color='blue', linewidth=1, markevery=markevery,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue', markeredgewidth=0.5,label='$C_{m_u}$')
+    plt.plot(alpha_c_lst[32:44], Cm_c_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+    plt.plot(alpha_u[32:44], Cm_u[32:44], color='blue', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue')
+    plt.xlabel("$\\alpha$ [$\\deg$]", fontsize=12)
+    plt.ylabel("Moment coefficient $C_m$ [-]", fontsize=12)
     plt.grid(True)
-    plt.legend()
-    plt.title("Drag polar comparison")
-    plt.show()
-
-    plt.plot(alpha_c_lst, Cm_c_lst, color='red', label='$C_{m_c}$')
-    plt.plot(alpha_u, Cm_u, color='blue', label='$C_{m_u}$')
-    plt.xlabel("$\\alpha$ [$\\deg$]")
-    plt.ylabel("Moment coefficient $C_m$ [-]")
-    plt.grid(True)
-    plt.legend()
-    plt.title("Moment coefficient comparison")
+    plt.legend(fontsize=16)
+    #plt.title("Moment coefficient comparison")
     plt.show()
     return alpha_c_lst, Cl_c_lst, Cd_c_lst, Cm_c_lst
 
-print(get_corrected_CdClCmalpha_lst(T_infty, Cd_u_test, Cl_u_test, Cm_u_test, alpha_List, q_inf_List, rho_List))
+get_corrected_CdClCmalpha_lst(T_infty, Cd_values, Cl_values, Cm_values, alphas, q_inf_List, rho_List)
