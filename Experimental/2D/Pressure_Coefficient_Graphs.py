@@ -9,7 +9,7 @@ import Ambient_Results.ambient_results_rho as ar
 
 ####################################################################
 ############## ONLY CHANGE VARIABLES IN THIS BOX ###################
-runNumber = 8                                               ####
+runNumber = 31                                               ####
 #                                                               ####
 #                                                               ####
 ####################################################################
@@ -90,11 +90,11 @@ plt.plot(
 )
 
 
-plt.title(f'Pressure Coefficient ($C_p$) vs Airfoil Tap Positions (Angle of Attack (α) = {runXdata[2]}°)')
-plt.xlabel('Tap Position (x/c)')
-plt.ylabel('Pressure Coefficient ($C_p$)')
+# plt.title(f'Pressure Coefficient ($C_p$) vs Airfoil Tap Positions (Angle of Attack (α) = {runXdata[2]}°)')
+plt.xlabel('Tap Position (x/c)',  fontsize=18)
+plt.ylabel('Pressure Coefficient ($C_p$)',  fontsize=18)
 plt.gca().invert_yaxis()
 plt.grid(True)
-plt.legend()
+plt.legend(fontsize=14)
 plt.show()
 
