@@ -67,29 +67,29 @@ x_lower = [0.0, 0.0043123, 0.0147147, 0.0392479, 0.0779506, 0.120143, 0.1632276,
            0.7328011, 0.7767783, 0.8207965, 0.8647978, 1.0]
 
 
-## 0 = -4 AOA, 1 = not sure, 2 = 4 AOA, 3 = 10 AOA, 4 = 16 AOA
-#index = 4
+# 0 = -4 AOA, 1 = not sure, 2 = 4 AOA, 3 = 10 AOA, 4 = 16 AOA
+index = 4
 
-## Plot the corrected data with additional formatting changes
-#plt.figure(figsize=(10, 6))
+# Plot the corrected data with additional formatting changes
+plt.figure(figsize=(10, 6))
 
-## Plot the upper surface without dots
-#plt.plot(x_upper, CP_upper[index], '-', color='blue', label=r'C_p (Upper Surface)')
-##plt.plot(upper_surface['x'], upper_surface['Cpi'], '-', color='purple', label=r'C_p (Upper Surface)')
-## Plot the lower surface without dots
-#plt.plot(x_lower, CP_lower[index], '-', color='red', label=r'C_p (Lower Surface)')
-##plt.plot(lower_surface['x'], lower_surface['Cpi'], '-', color='orange', label=r'C_p (Lower Surface)')
-## Connect the trailing edges of the upper and lower surfaces
+# Plot the upper surface without dots
+plt.plot(x_upper, CP_upper[index], '-', color='blue', label=r'C_p (Upper Surface)')
+#plt.plot(upper_surface['x'], upper_surface['Cpi'], '-', color='purple', label=r'C_p (Upper Surface)')
+# Plot the lower surface without dots
+plt.plot(x_lower, CP_lower[index], '-', color='red', label=r'C_p (Lower Surface)')
+#plt.plot(lower_surface['x'], lower_surface['Cpi'], '-', color='orange', label=r'C_p (Lower Surface)')
+# Connect the trailing edges of the upper and lower surfaces
 
-## Formatting the graph
-#plt.gca().invert_yaxis()  # Invert y-axis for proper visualization
-#plt.xlabel('Position (x/c)', fontsize=12)
-#plt.ylabel('Pressure Coefficient (C_p)', fontsize=12)
-#plt.title('Pressure Coefficient Distribution', fontsize=14)
-#plt.grid(True)
-#plt.legend(fontsize=10)
-#plt.tight_layout()
+# Formatting the graph
+plt.gca().invert_yaxis()  # Invert y-axis for proper visualization
+plt.xlabel('Position (x/c)', fontsize=12)
+plt.ylabel('Pressure Coefficient (C_p)', fontsize=12)
+plt.title('Pressure Coefficient Distribution', fontsize=14)
+plt.grid(True)
+plt.legend(fontsize=10)
+plt.tight_layout()
 
-## Display the plot
-#plt.show()
+# Display the plot
+plt.show()
 

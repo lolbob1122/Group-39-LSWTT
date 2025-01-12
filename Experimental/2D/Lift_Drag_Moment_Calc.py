@@ -96,45 +96,45 @@ for RunNumber in range(6,60):
 
     # print(f"Calculated Cn: {Cn:.4f} \nCalculated Cm: {Cm:.4f}\nCalculated Cm0: {CmQuarterChord:.4f}\nCalculated CoP: {CoP:.4f}\nCalculated Cd: {Cd:.4f}\nCalculated Cl: {Cl:.4f}\nAngle of Attack: {alpha:.4f}")
 
-plt.figure(figsize=(10, 6))
-plt.plot(alphas, Cm_values, label='$C_m$', color='b', marker='o')
-plt.xlabel('Angle of Attack [deg]')
-plt.ylabel('$C_m$')
-# plt.title('Moment Coefficient ($C_m$) vs Angle of Attack ($\\alpha$)')
-plt.grid(True)
-plt.legend()
-plt.show()
+# plt.figure(figsize=(10, 6))
+# plt.plot(alphas, Cm_values, label='$C_m$', color='b', marker='o')
+# plt.xlabel('Angle of Attack [deg]')
+# plt.ylabel('$C_m$')
+# # plt.title('Moment Coefficient ($C_m$) vs Angle of Attack ($\\alpha$)')
+# plt.grid(True)
+# plt.legend()
+# plt.show()
 
-# Plotting Cl vs Alpha
-plt.figure(figsize=(10, 6))
-plt.plot(alphas, Cl_values, label='$C_l$', color='g', marker='s')
-plt.xlabel('Angle of Attack [deg]')
-plt.ylabel('$C_l$')
-# plt.title('Lift Coefficient ($C_l$) vs Angle of Attack ($\\alpha$)')
-plt.grid(True)
-plt.legend()
-plt.show()
+# # Plotting Cl vs Alpha
+# plt.figure(figsize=(10, 6))
+# plt.plot(alphas, Cl_values, label='$C_l$', color='g', marker='s')
+# plt.xlabel('Angle of Attack [deg]')
+# plt.ylabel('$C_l$')
+# # plt.title('Lift Coefficient ($C_l$) vs Angle of Attack ($\\alpha$)')
+# plt.grid(True)
+# plt.legend()
+# plt.show()
 
-# Plotting Cd vs Alpha
-plt.figure(figsize=(10, 6))
-plt.plot(alphas, Cd_values, label='$C_d$', color='r', marker='^')
-plt.xlabel('Angle of Attack [deg]')
-plt.ylabel('$C_d$')
-# plt.title('Drag Coefficient ($C_d$) vs Angle of Attack ($\\alpha$)')
-plt.grid(True)
-plt.legend()
-plt.show()
+# # Plotting Cd vs Alpha
+# plt.figure(figsize=(10, 6))
+# plt.plot(alphas, Cd_values, label='$C_d$', color='r', marker='^')
+# plt.xlabel('Angle of Attack [deg]')
+# plt.ylabel('$C_d$')
+# # plt.title('Drag Coefficient ($C_d$) vs Angle of Attack ($\\alpha$)')
+# plt.grid(True)
+# plt.legend()
+# plt.show()
 
 
 
-# Plotting CoP vs Alpha
-plt.figure(figsize=(10, 6))
-plt.plot(alphas, CoP_values, label='CoP', color='m', marker='x')
-plt.xlabel('Angle of Attack [deg]')
-plt.ylabel('Center of Pressure (CoP)')
-# plt.title('Center of Pressure (CoP) vs Angle of Attack ($\\alpha$)')
-plt.grid(True)
-plt.legend()
-plt.show()
+# # Plotting CoP vs Alpha
+# plt.figure(figsize=(10, 6))
+# plt.plot(alphas, CoP_values, label='CoP', color='m', marker='x')
+# plt.xlabel('Angle of Attack [deg]')
+# plt.ylabel('Center of Pressure (CoP)')
+# # plt.title('Center of Pressure (CoP) vs Angle of Attack ($\\alpha$)')
+# plt.grid(True)
+# plt.legend()
+# plt.show()
 
 
