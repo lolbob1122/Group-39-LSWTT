@@ -2,7 +2,7 @@ from math import pi, sin, sqrt
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
-from Lift_Drag_Moment_Calc import Cd_values, Cl_values, Cm_values, alphas
+from Lift_Drag_Moment_Calc import Cd_values, Cl_values, Cm_values, alphas, CoP_values
 
 # Constants
 mu_zero = 1.716 * 10**(-5) # kg/m*s
@@ -330,3 +330,66 @@ def get_corrected_CdClCmalpha_lst(T_infty, Cd_u, Cl_u, Cm_u, alpha_u, q_infty, r
     return alpha_c_lst, Cl_c_lst, Cd_c_lst, Cm_c_lst
 
 get_corrected_CdClCmalpha_lst(T_infty, Cd_values, Cl_values, Cm_values, alphas, q_inf_List, rho_List)
+
+alpha_u = alphas
+Cl_u = Cl_values
+Cd_u = Cd_values
+CoP_u = CoP_values
+Cm_u = Cm_values
+
+markevery = [(i % 1 == 0 and not (32 <= i <= 44)) for i in range(len(alpha_u))]
+
+#plt.plot(alpha_c_lst, Cl_c_lst, color='red', linewidth=1, markevery=markevery,marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5, label='$C_{l_c}$') 
+plt.plot(alpha_u, Cl_u, color='green', linewidth=1, markevery=markevery,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='green', markeredgewidth=0.5, label='$C_{l}$')
+#plt.plot(alpha_c_lst[32:44], Cl_c_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+plt.plot(alpha_u[32:44], Cl_u[32:44], color='green', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='green')
+plt.xlabel("Angle of attack, $\\alpha$ [$\\deg$]", fontsize=12)
+plt.ylabel("Lift coefficient $C_l$ [-]", fontsize=12)
+plt.grid(True)
+plt.legend(fontsize=16)
+#plt.title("Lift curve comparison")
+plt.show()
+
+#plt.plot(alpha_c_lst, Cd_c_lst, color='red', linewidth=1, markevery=markevery,marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5,label='$C_{d_c}$')
+plt.plot(alpha_u, Cd_u, color='red', linewidth=1, markevery=markevery,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5,label='$C_{d}$')
+#plt.plot(alpha_c_lst[32:44], Cd_c_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+plt.plot(alpha_u[32:44], Cd_u[32:44], color='red', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='red')
+plt.xlabel("Angle of attack, $\\alpha$ [$\\deg$]", fontsize=12)
+plt.ylabel("Drag coefficient $C_d$ [-]", fontsize=12)
+plt.grid(True)
+plt.legend(fontsize=16)
+#plt.title("Drag curve comparison", fontsize=12)
+plt.show()
+
+# #plt.plot(Cd_c_lst, Cl_c_lst, color='red', linewidth=1, markevery=markevery,marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5,label='Corrected')
+# plt.plot(Cd_u, Cl_u, color='blue', linewidth=1, markevery=markevery,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue', markeredgewidth=0.5,label='Uncorrected')
+# #plt.plot(Cd_c_lst[32:44], Cl_c_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+# plt.plot(Cd_u[32:44], Cl_u[32:44], color='blue', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue')
+# plt.xlabel("Drag coefficient $C_d$ [-]", fontsize=12)
+# plt.ylabel("Lift coefficient $C_l$ [-]", fontsize=12)
+# plt.grid(True)
+# plt.legend()
+# #plt.title("Drag polar comparison")
+# plt.show()
+
+#plt.plot(alpha_c_lst, Cm_c_lst, color='red', linewidth=1, markevery=markevery,marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5,label='$C_{m_c}$')
+plt.plot(alpha_u, Cm_u, color='blue', linewidth=1, markevery=markevery,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue', markeredgewidth=0.5,label='$C_{m}$')
+#plt.plot(alpha_c_lst[32:44], Cm_c_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+plt.plot(alpha_u[32:44], Cm_u[32:44], color='blue', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='blue')
+plt.xlabel("Angle of attack, $\\alpha$ [$\\deg$]", fontsize=12)
+plt.ylabel("Moment coefficient $C_m$ [-]", fontsize=12)
+plt.grid(True)
+plt.legend(fontsize=16)
+#plt.title("Moment coefficient comparison")
+plt.show()
+
+#plt.plot(alpha_c_lst, Cm_c_lst, color='red', linewidth=1, markevery=markevery,marker='x', markerfacecolor='none', markersize=5, markeredgecolor='red', markeredgewidth=0.5,label='$C_{m_c}$')
+plt.plot(alpha_u, CoP_u, color='m', linewidth=1, markevery=markevery,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='m', markeredgewidth=0.5,label='CoP')
+#plt.plot(alpha_c_lst[32:44], Cm_c_lst[32:44], color='red', linestyle='none',linewidth=1, markevery=slice(2, None, 4),markeredgewidth=0.5,marker='x',markerfacecolor='none', markersize=5, markeredgecolor='red')
+plt.plot(alpha_u[32:44], CoP_u[32:44], color='m', linestyle='none', markevery=slice(2, None, 4),linewidth=1, markeredgewidth=0.5,marker='+', markerfacecolor='none', markersize=5, markeredgecolor='m')
+plt.xlabel("Angle of attack, $\\alpha$ [$\\deg$]", fontsize=12)
+plt.ylabel("Centre of Pressure, CoP [x/c]", fontsize=12)
+plt.grid(True)
+plt.legend(fontsize=16)
+#plt.title("Moment coefficient comparison")
+plt.show()
